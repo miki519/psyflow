@@ -7,7 +7,7 @@
 
 ## The environment you are building
 
-A Claude Code working environment centered on the eight-station Delivery
+A Claude Code working environment centered on the eight-stage Delivery
 Pipeline:
 
 | Component | Layer | Install method |
@@ -78,8 +78,21 @@ failed item as done.
 
 ## Notes
 
+- **This manual doubles as the update procedure.** When the user asks to
+  update (rather than install), run the same steps: pull the latest repo
+  (or re-clone), re-run `install.sh`, and guide the user through
+  `/plugin marketplace update claude-workbench` (and other marketplaces they
+  use). If working inside a project, also offer to update project tools
+  (`npm update -g code-review-graph`, then re-run `code-review-graph build`
+  — major versions can invalidate the old graph). Third-party upstream
+  changes may drift from the README teaching — mention the verified-versions
+  table if the user hits inconsistencies. Everything is designed to be
+  re-run safely. Report what was updated at the end.
 - `install.sh` is idempotent and safe to re-run (marker-based blocks are
   replaced in place; CLAUDE.md is backed up automatically each run).
+  User customizations OUTSIDE the workbench marker blocks are never touched;
+  anything inside the markers is replaced — warn the user if you detect
+  hand-edits inside a workbench block before replacing it.
 - Never copy third-party skill content into the user's directories — their
   marketplace is their update channel; a copy strands the user on a stale
   version forever.

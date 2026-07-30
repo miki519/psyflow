@@ -6,15 +6,15 @@ description: Turn a locked spec into architecture decisions before ticketing.
   in one module, announce the skip instead.
 ---
 
-# /to-architecture — Architecture Decision Station
+# /to-architecture — Architecture Decision Stage
 
 Sits between /to-spec and /to-ticket in the delivery pipeline. The spec says
-WHAT the product does; this station decides HOW the system is shaped to do it,
+WHAT the product does; this stage decides HOW the system is shaped to do it,
 before the work is cut into tickets.
 
 ## Step 0 — Condition check (mandatory, out loud)
 
-Run this station only when the ticket crosses at least one of: module
+Run this stage only when the ticket crosses at least one of: module
 boundary, service boundary, external API surface, data/schema ownership,
 event flow, cache layer, third-party integration. Otherwise state explicitly
 "no architectural decision in this ticket, skipping /to-architecture" and
@@ -33,7 +33,7 @@ Work through only the dimensions the ticket actually touches:
 
 - **Module / service boundary** — do NOT reason about this here: invoke
   /codebase-design and apply its deep-module vocabulary to decide what
-  belongs together and where the seams go. This station only RECORDS the
+  belongs together and where the seams go. This stage only RECORDS the
   outcome as an ADR; the design thinking belongs to that skill. It is also
   the follow-up tool when a later refactor revisits the boundary.
 - **API contract** — endpoints, request/response schemas, error envelope,
@@ -72,5 +72,5 @@ nod, then ticket.
   for features that do not exist yet (YAGNI applies to boundaries too).
 - Never contradict an existing ADR silently: supersede it with a new one
   that names what changed and why.
-- This station writes `docs/decisions/` and contract files only — no
+- This stage writes `docs/decisions/` and contract files only — no
   implementation code, no token files, no component specs.

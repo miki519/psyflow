@@ -1,23 +1,23 @@
 ---
 name: delivery-pipeline
-description: Load the eight-station delivery pipeline and run the current task
+description: Load the eight-stage delivery pipeline and run the current task
   through it. Use when starting feature work, when the user invokes any
-  pipeline station (/grill-me, /prototype, /to-spec, /to-architecture,
+  pipeline stage (/grill-me, /prototype, /to-spec, /to-architecture,
   /to-ticket, /implement, /code-review, /ship), or when the user asks how the
   delivery workflow is organized.
 ---
 
 # Delivery Pipeline — the full workflow
 
-Eight stations, each invoked as a slash command. Each command auto-mounts
-whatever supporting skills exist in the current project. Stations marked *
+Eight stages, each invoked as a slash command. Each command auto-mounts
+whatever supporting skills exist in the current project. Stages marked *
 are conditional: when their condition is absent, say so explicitly and skip —
 never skip silently.
 
 /grill-me → /prototype* → /to-spec → /to-architecture* → /to-ticket
 → /implement → /code-review → /ship
 
-## The stations
+## The stages
 
 1. **/grill-me** — Interview question by question, one recommended answer per
    question, decisions locked one at a time. On first contact with a new
@@ -43,7 +43,7 @@ never skip silently.
    spec includes a **flow section** with three paths — success, failure, and
    **recovery** (how the user gets back onto the success path) — and an
    **instrumentation section** (what to measure after release; implemented in
-   /implement, checked in /code-review). **This is the only station that
+   /implement, checked in /code-review). **This is the only stage that
    writes the design system**: tokens are created or modified here (SemVer
    per governance) and component specs are born here (anatomy, variants, the
    8 states, token mapping, ARIA/keyboard model). Modifying an existing token
@@ -83,7 +83,7 @@ never skip silently.
    otherwise fulfill the intent manually (tests green, changelog, version,
    deploy steps). After release, observations (metrics, errors, user
    feedback) are filed into `docs/research/` as evidence for the next
-   /grill-me — improvement is not a station, it is this routing rule.
+   /grill-me — improvement is not a stage, it is this routing rule.
 
 ## Standing rules
 
@@ -109,8 +109,8 @@ Tokens and components alone are not a design system.
 - Boundary rule: a file the build/toolchain reaches belongs in
   `packages/`/`apps/`; a file nothing imports belongs in `docs/`.
 
-**Principle — fixed stations, flexible mounting**: when a command or skill is
-absent from the current project, fulfill the station's intent manually; never
-skip a station for lack of tooling (the two conditional stations' announced
+**Principle — fixed stages, flexible mounting**: when a command or skill is
+absent from the current project, fulfill the stage's intent manually; never
+skip a stage for lack of tooling (the two conditional stages' announced
 skips are the only exceptions). Event-driven skills (research, debugging,
 merge-conflict resolution) stay out of the main pipeline.

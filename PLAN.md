@@ -26,7 +26,8 @@
 - 社群 marketplace 預設**不**自動更新；可per-marketplace 開啟。
 - plugin.json 的 version 欄位控制更新推送節奏。
 - `.claude/settings.json` 的 `extraKnownMarketplaces`＋`enabledPlugins`
-  （v2.1.195+）可讓專案開啟時自動提示裝 plugin → starter-template 用此機制。
+  （v2.1.195+）可讓專案開啟時自動提示裝 plugin（starter-template 曾用此機制，
+  2026-07-31 改版時整個刪除，僅在 README 第八節留一行進階備註）。
 - manifest 格式範例已照官方文件寫入 .claude-plugin/。
 
 ## 待辦（下一個 session 從這裡接）
