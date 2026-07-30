@@ -31,8 +31,11 @@ cd claude-workbench
 Verify:
 - `~/.claude/CLAUDE.md` now contains the `workbench:delivery-pipeline:begin` marker
 - `~/.claude/skills/to-architecture/SKILL.md` exists
-- `code-review-graph --version` produces output (if the global npm install
-  failed, report it and offer an alternative — do not skip silently)
+- `code-review-graph --version` produces output. It is a Python (PyPI)
+  package installed via `uv tool install` (pipx as fallback) — NOT npm.
+  If the install was skipped for lack of uv/pipx, install uv first
+  (https://docs.astral.sh/uv/), then re-run `install.sh`; report failures,
+  do not skip silently.
 
 ### 2. Guide the user through plugin installation
 
@@ -42,13 +45,14 @@ verify:
 
 ```
 /plugin marketplace add mattpocock/skills
-/plugin marketplace add miki519/claude-workbench
-/plugin install delivery-pipeline@claude-workbench
 ```
 
+(This repo's own skills need no plugin — `install.sh` already placed them in
+`~/.claude/skills/`.)
+
 Verify: ask the user to open `/plugin` and check the installed list, or test
-directly whether `/to-architecture` and `/grill-me` appear among the
-available skills.
+directly whether `/grill-me` (from the plugin) and `/to-architecture` (from
+install.sh) appear among the available skills.
 
 ### 3. Explain the per-project steps (do not run them now)
 
@@ -80,11 +84,12 @@ failed item as done.
 
 - **This manual doubles as the update procedure.** When the user asks to
   update (rather than install), run the same steps: pull the latest repo
-  (or re-clone), re-run `install.sh`, and guide the user through
-  `/plugin marketplace update claude-workbench` (and other marketplaces they
-  use). If working inside a project, also offer to update project tools
-  (`npm update -g code-review-graph`, then re-run `code-review-graph build`
-  — major versions can invalidate the old graph). Third-party upstream
+  (or re-clone) and re-run `install.sh`; offer to update third-party
+  marketplaces too (`/plugin marketplace update <name>`, run by the user).
+  If working inside a project, also offer to update project tools
+  (`uv tool upgrade code-review-graph` — it is a PyPI package, not npm —
+  then re-run `code-review-graph build`; major versions can invalidate the
+  old graph). Third-party upstream
   changes may drift from the README teaching — mention the verified-versions
   table if the user hits inconsistencies. Everything is designed to be
   re-run safely. Report what was updated at the end.

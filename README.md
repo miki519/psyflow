@@ -30,10 +30,11 @@ AI 負責跑流程和產出，你只負責回答問題和拍板。
 3. [申請 GitHub 帳號](#三申請-github-帳號)
 4. [安裝 gh 並授權登入](#四安裝-gh-並授權登入)
 5. [安裝 Node.js](#五安裝-nodejs)
-6. [安裝 Docker](#六安裝-docker)
-7. [安裝本 repo](#七安裝本-repo)
-8. [開始新專案](#八開始新專案)
-9. [工作流教學](#九工作流教學)
+6. [安裝 uv](#六安裝-uv)
+7. [安裝 Docker](#七安裝-docker)
+8. [安裝本 repo](#八安裝本-repo)
+9. [開始新專案](#九開始新專案)
+10. [工作流教學](#十工作流教學)
 
 ---
 
@@ -111,7 +112,26 @@ sudo apt install nodejs npm          # Ubuntu / Debian
 
 驗證：`node --version` 有輸出即成功。
 
-## 六、安裝 Docker
+## 六、安裝 uv
+
+`uv` 是 Python 工具的管理器，之後安裝 `code-review-graph`（程式碼知識圖）
+會用到。它自帶 Python，**不需要另外安裝 Python**。
+
+### macOS / Linux
+
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+### Windows（PowerShell）
+
+```powershell
+irm https://astral.sh/uv/install.ps1 | iex
+```
+
+驗證：`uv --version` 有輸出即成功（裝完若找不到指令，關掉終端機重開一次）。
+
+## 七、安裝 Docker
 
 本工作流的部署慣例是 Docker（開發資料庫、正式環境都容器化）。
 
@@ -121,7 +141,7 @@ sudo apt install nodejs npm          # Ubuntu / Debian
 | Windows | [Docker Desktop for Windows](https://docs.docker.com/desktop/setup/install/windows-install/) |
 | Linux | [Docker Engine](https://docs.docker.com/engine/install/)（記得把使用者加入 `docker` 群組） |
 
-## 七、安裝本 repo
+## 八、安裝本 repo
 
 前面備齊後，裝這套工作環境本體。
 
@@ -166,7 +186,7 @@ claude
 AI 會拉最新版、重跑安裝、引導你完成 plugin 更新；動到你自訂的內容前
 會先警告，完成後回報更新了什麼。
 
-## 八、開始新專案
+## 九、開始新專案
 
 之後每次要開新專案，三步：
 
@@ -193,11 +213,7 @@ claude
 
 裝完就可以直接開工（見下一節）。
 
-> 進階：團隊共用專案時，可在專案的 `.claude/settings.json` 寫入
-> `extraKnownMarketplaces` 與 `enabledPlugins`，隊友開啟並信任專案後
-> 會自動被提示安裝同一套 plugin。
-
-## 九、工作流教學
+## 十、工作流教學
 
 ### 第一部分：基礎用法
 
@@ -288,6 +304,37 @@ claude
 pilotfish 決定誰來做（貴模型判斷、便宜模型跑量、獨立驗證把關），
 Delivery Pipeline 是把三者接起來的那條線。
 
+#### 協作地圖：UI/UX 與前後端怎麼交接
+
+這條 pipeline 存在的目的：讓設計、前端、後端**靠契約產物協作**，
+而不是靠記憶或聊天紀錄。每個工種交接處都有一份機器可驗的產物，
+契約一旦成立，工作就能平行：
+
+```
+  UX／設計                        前端              後端
+  /prototype（外觀手感）─┐
+  flow 三段（行為）      ─┤
+                         ├─ /to-spec ──→ tokens＋元件規格
+                         │                  │ 前端消費
+                         └─ /to-architecture ──→ API 契約（schema）
+                                            │ 前後端都照它寫
+  /implement：前端與後端對著契約「平行」開發，誰都不等誰的程式碼
+  /code-review：任何一側偏離契約，審查直接擋下
+```
+
+四條交接規則：
+
+- **設計 → 前端**：tokens 與元件規格就是介面。前端不准自己發明視覺值，
+  缺了退回 /to-spec，不准硬編碼
+- **後端 ↔ 前端**：API 契約就是介面。前端對著 schema 做假資料先開工，
+  後端照 schema 實作；要改契約＝開新的架構決策（ADR 取代），
+  不准在單邊程式碼裡偷改
+- **UX → 前後端**：規格的 flow 三段（成功／失敗／恢復）同時約束
+  畫面狀態與 API 錯誤語意——錯誤畫面和錯誤回應是同一條 flow 的
+  兩面，不是兩個人各自發明
+- **產品 → 所有人**：埋點小節把事件命名一次；前端發、後端收、
+  審查驗它存在
+
 #### 各 stage 規則
 
 | Stage | 職責 | 關鍵規則 |
@@ -327,11 +374,11 @@ Delivery Pipeline 是把三者接起來的那條線。
 | `/diagnosing-bugs` | 困難 bug 的診斷循環（事件驅動） |
 | `/resolving-merge-conflicts` | 處理 merge/rebase 衝突（事件驅動） |
 
-#### 本 repo（delivery-pipeline plugin）
+#### 本 repo（install.sh 裝進個人 skills）
 
 | Skill | 用途 |
 |---|---|
-| `/delivery-pipeline` | 載入八個 stage 總綱（走完整安裝的人不需要，規則已在 CLAUDE.md） |
+| `/delivery-pipeline` | 八個 stage 的完整規則所在——CLAUDE.md 只放指標，執行任何 stage 指令前 AI 會載入它 |
 | `/to-architecture` | 架構決策 stage：記錄 ADR 與 contract，主流程第四個 stage |
 
 #### Karpathy 準則
@@ -382,8 +429,7 @@ Delivery Pipeline 是把三者接起來的那條線。
 ├── SETUP.md                ← 給 AI 讀的安裝手冊
 ├── install.sh              ← 檔案層安裝（冪等、自動備份）
 ├── claude-md-blocks/       ← 全域 CLAUDE.md 區塊模板
-├── .claude-plugin/         ← plugin marketplace 清單
-├── plugins/delivery-pipeline/  ← 八個 stage 總綱＋to-architecture skills
+├── skills/                 ← 八個 stage 總綱＋to-architecture（裝進 ~/.claude/skills/）
 └── PLAN.md                 ← 維護者交接文件
 ```
 

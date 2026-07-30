@@ -43,6 +43,13 @@
 repo 內除 README 外全是安裝資產。作者的四篇元件文章不進本 repo，
 README 只保留各元件的一段式介紹。
 
+註（2026-07-31 決策二）：**放棄本 repo 的 plugin/marketplace 發佈路徑**
+（作者暫無此需求）——`.claude-plugin/` 與 `plugins/` 已刪除，skills 搬到
+頂層 `skills/`，install.sh 直接複製進 `~/.claude/skills/`，它就是唯一
+發佈管道。CLAUDE.md 區塊已瘦身為 v1.2.0 薄指標（完整規則的唯一真相源
+＝delivery-pipeline skill）。第三方（mattpocock 等）仍走各自的 marketplace。
+若日後要恢復 plugin 路徑，manifest 格式見上方「已查證的事實」。
+
 ## 相關脈絡
 
 - 作者的全域 `~/.claude/CLAUDE.md` 已裝 pipeline 區塊（v1.1.0，
