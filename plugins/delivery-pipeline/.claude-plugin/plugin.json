@@ -1,0 +1,10 @@
+{
+  "name": "delivery-pipeline",
+  "displayName": "Delivery Pipeline",
+  "description": "Eight-station slash-command delivery pipeline with design-system ownership rules and a closed feedback loop. Invoke /delivery-pipeline to load the full workflow; /to-architecture is the companion architecture-decision station.",
+  "version": "1.0.0",
+  "author": {
+    "name": "wellpsymiki"
+  },
+  "license": "MIT"
+}

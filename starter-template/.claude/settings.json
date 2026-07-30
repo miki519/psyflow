@@ -1,0 +1,13 @@
+{
+  "extraKnownMarketplaces": {
+    "claude-workbench": {
+      "source": {
+        "source": "github",
+        "repo": "miki519/claude-workbench"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "delivery-pipeline@claude-workbench": true
+  }
+}
