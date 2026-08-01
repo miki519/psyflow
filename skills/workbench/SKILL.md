@@ -176,6 +176,14 @@ Handoff rules:
 
 ## Standing rules
 
+- **Emergency hotfix escape hatch**: a production incident may enter
+  through the event-driven engines (diagnosing-bugs) and, once fixed, go
+  straight to /accept → /release — announce the skipped stages out loud.
+  The /accept → /release gate itself is never skipped: /accept shrinks to
+  "this fix verified, nothing else broken"; /release still runs staging →
+  confirm → production. If the root cause exposes a design gap, file a
+  follow-up /discover round — the escape hatch puts out the fire, it does
+  not fix the fire hazard.
 - **Component promotion**: first appearance lives in its page; second
   appearance across pages promotes it to the shared library via /spec
   (full 8-state spec, call sites converge). No speculative components.
