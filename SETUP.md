@@ -14,6 +14,7 @@ flow (/setup → /discover → /design* → /spec → /tickets → /build →
 | Component | Layer | Install method |
 |---|---|---|
 | Workbench flow (this repo) | global CLAUDE.md + personal skill + slash commands | `install.sh` |
+| pilotfish | global CLAUDE.md block + `~/.claude/agents/` | upstream agent-driven install, user approves the merge plan |
 | code-review-graph | CLI + per-project MCP | `install.sh` installs the CLI |
 | Matt Pocock skills | plugin | user installs inside Claude Code |
 | Karpathy guidelines | plugin | user installs inside Claude Code |
@@ -50,16 +51,47 @@ verify:
 
 ```
 /plugin marketplace add mattpocock/skills
+/plugin marketplace add forrestchang/andrej-karpathy-skills
 ```
 
 (This repo's own skills need no plugin — `install.sh` already placed them in
 `~/.claude/skills/`.)
 
 Verify: ask the user to open `/plugin` and check the installed list, or test
-directly whether `/grill-me` (from the plugin) and `/discover` (from
-install.sh) appear among the available commands.
+directly whether `/grill-me` (from mattpocock), the
+`andrej-karpathy-skills:karpathy-guidelines` skill, and `/discover` (from
+install.sh) appear among the available commands/skills.
 
-### 3. Explain the per-project steps (do not run them now)
+### 3. Guide the user through pilotfish installation
+
+pilotfish (multi-model orchestration: the main session plans, cheaper role
+agents execute, fresh contexts verify) has its own upstream agent-driven
+installer with an explicit approval gate — it writes into the user's global
+CLAUDE.md and `~/.claude/agents/`. NEVER bypass that gate, and never copy
+its files by hand.
+
+First check whether it is already installed: `~/.claude/agents/scout.md`
+exists and `~/.claude/CLAUDE.md` contains an orchestration (pilotfish)
+block. If yes, report so and move on.
+
+If not, clone the pinned verified version (see README's version table)
+and follow the upstream runbook:
+
+```bash
+git clone --branch v1.3.5 --depth 1 https://github.com/Nanako0129/pilotfish.git
+```
+
+Read `install/AGENT-INSTALL.md` from that checkout and follow it: show the
+user the full plan of changes and get explicit approval BEFORE writing
+anything. (Alternatively the user can run it in a fresh session from the
+checkout, per the pilotfish README.)
+
+Verify (after the user restarts the session): `~/.claude/agents/` contains
+the eight role files (scout, Explore, executor, mech-executor,
+plan-verifier, verifier, security-reviewer, security-executor) and the
+CLAUDE.md orchestration block is present.
+
+### 4. Explain the per-project steps (do not run them now)
 
 Tell the user that for every new project:
 
@@ -71,7 +103,7 @@ code-review-graph install --platform claude-code
 code-review-graph build
 ```
 
-### 4. Self-check and report
+### 5. Self-check and report
 
 When done, report a checklist to the user:
 
@@ -79,8 +111,10 @@ When done, report a checklist to the user:
 - [ ] Personal skills: workbench, to-architecture
 - [ ] Slash commands: the eight stage commands in ~/.claude/commands/
 - [ ] CLI: code-review-graph
-- [ ] Plugins: mattpocock skills (installed interactively by the user,
-      verified by you)
+- [ ] Plugins: mattpocock skills + Karpathy guidelines (installed
+      interactively by the user, verified by you)
+- [ ] pilotfish: orchestration block + eight role agents (installed via the
+      upstream runbook with the user's approval)
 - [ ] Per-project steps explained
 
 If any item failed: report the cause and the impact honestly. Never mark a

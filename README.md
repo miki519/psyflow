@@ -162,8 +162,10 @@ claude
 
 > 請讀取 https://github.com/miki519/claude-workbench 的 SETUP.md，照它配置我的環境。
 
-你的 Claude 會自己下載 repo、執行安裝、引導你完成 plugin 步驟、
-最後回報驗收清單。
+你的 Claude 會自己下載 repo、執行安裝、引導你完成 plugin 步驟
+（Matt Pocock skills 與 Karpathy 準則，`/plugin` 是互動指令、要你自己貼）、
+再帶你裝 pilotfish（它有自己的安裝流程：AI 讀上游 runbook、
+列出要改哪些檔、**你核准後才寫入**），最後回報驗收清單。
 
 ### 驗證過的版本組合
 
@@ -172,6 +174,7 @@ claude
 | 元件 | 驗證版本 | 日期 |
 |---|---|---|
 | mattpocock-skills | 1.2.0 | 2026-07 |
+| andrej-karpathy-skills | 1.0.0 | 2026-07 |
 | ux-ui-agent-skills | 2.4.0 | 2026-07 |
 | pilotfish | 1.3.5 | 2026-07 |
 | workbench（本 repo） | 2.0.0 | 2026-08 |
