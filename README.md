@@ -1,7 +1,7 @@
 # Claude Workbench
 
 從零開始建立一套完整、可複製的 Claude Code 工作環境——從訂閱、安裝，
-到一條把需求做到上線的 **八個 stage 的 Delivery Pipeline**。
+到一條把需求做到上線的 **八個 stage 的 Workbench 交付流程**。
 照著本文由上而下做一遍，你會得到跟作者一樣的工作環境。
 
 ## 為什麼要做這個工作流
@@ -174,7 +174,7 @@ claude
 | mattpocock-skills | 1.2.0 | 2026-07 |
 | ux-ui-agent-skills | 2.4.0 | 2026-07 |
 | pilotfish | 1.3.5 | 2026-07 |
-| delivery-pipeline（本 repo） | 1.0.0 | 2026-07 |
+| workbench（本 repo） | 2.0.0 | 2026-08 |
 
 ### 更新這套環境
 
@@ -204,83 +204,84 @@ claude
 
 ### 3. 讓 AI 安裝專案工具
 
-把這句話貼進去：
+打工作流的第 0 個 stage：
 
-> 請初始化這個專案的工作環境：執行 `npx ux-ui-agent-skills init` 安裝設計知識庫，
-> 再執行 `code-review-graph install --platform claude-code`（只安裝、不用 build，
-> 專案還是空的）。開始前先確認 `node` 與 `npx` 可用，缺少就先安裝 Node.js LTS
-> 再繼續；任何指令失敗請診斷並解決，不要跳過。完成後回報安裝結果。
+```
+/setup
+```
 
+AI 會安裝設計知識庫（UI 專案）與程式碼知識圖，開始前先檢查 `node` 與
+`npx`，缺什麼先補齊；任何指令失敗會診斷解決而不是跳過，完成後回報結果。
 裝完就可以直接開工（見下一節）。
 
 ## 十、工作流教學
 
 ### 第一部分：基礎用法
 
-先記住一件事：**每個 stage 就是一個斜線指令，做完一個 stage 打下一個 stage**。
-八個 stage 不用背，跟著四個情境操作一遍就會了。
+先記住一件事：**每個 stage 就是一個斜線指令，做完一個 stage 打下一個**。
+不用背，AI 每做完一個 stage 會告訴你下一個是什麼；跟著四個情境操作一遍就會了。
 
 ```
-/grill-me → /prototype* → /to-spec → /to-architecture* → /to-ticket
-         → /implement → /code-review → /ship
+/setup → /discover → /design* → /spec → /tickets → /build → /accept → /release
 ```
 
-`*`＝條件 stage，用不到時 AI 會明講「跳過」，你直接打下一個 stage 即可。
+- `/setup` 一個專案只做一次（第九節做過就不用再做）；之後每一輪功能
+  都從 `/discover` 開始。
+- `*`＝條件 stage：不動畫面時 AI 會在 `/discover` 結尾明講「跳過
+  /design」，你直接打 `/spec` 即可。
+- `/accept` 只驗收不部署；`/release` 一定要驗收通過才能跑。
 
 #### 情境一：「我想做一個官網」（大型、從零開始）
 
 | 步驟 | 你打的指令 | 目的／會發生什麼 |
 |---|---|---|
-| 1 | `/grill-me 我想做一個公司官網` | AI 逐題訪談（受眾？頁面清單？品牌色？），每題附推薦答案，你逐項拍板。新領域它會先建**詞彙表**，讓之後的文案與程式碼用同一套名詞 |
-| 2 | `/prototype` | 把首頁做成**可互動的 HTML** 給你玩。目的：「看得到之前，訪談問不出真需求」——「顏色太濃」「改大圓角」這種回饋就在這個 stage 發生，改到你滿意為止 |
-| 3 | `/to-spec` | 把拍板的結果凍成規格＋design tokens（色彩、字體、間距的唯一真相源）。之後所有頁面都吃這份 tokens，不會頁頁長得不一樣 |
-| 4 | `/to-architecture` | 決定跨頁面的邊界：部署方式、表單送到哪、要不要 CMS。每個決策留一份 ADR（含被否決的方案與理由） |
-| 5 | `/to-ticket` | 把規格切成一張張可獨立完成的票（首頁、關於頁、聯絡表單…） |
-| 6 | `/implement` | 逐票實作。UI 只准引用第 3 步的 tokens，不准另外發明顏色 |
-| 7 | `/code-review` | 雙軸審查：程式碼品質＋是否符合規格；因為有 UI，加跑對比度等實測 gates |
-| 8 | `/ship` | 上線前總關卡：測試、changelog、部署步驟 |
+| 1 | `/setup` | 初始化專案工具（設計知識庫＋程式碼知識圖）。一個專案只做一次 |
+| 2 | `/discover 我想做一個公司官網` | AI 逐題訪談（受眾？頁面清單？品牌色？），每題附推薦答案，你逐項拍板。新領域它會先建**詞彙表**，讓之後的文案與程式碼用同一套名詞。結尾宣告：「這案子動畫面，下一步 /design」 |
+| 3 | `/design` | 把首頁做成**可互動的 HTML** 給你玩。目的：「看得到之前，訪談問不出真需求」——「顏色太濃」「改大圓角」這種回饋就在這個 stage 發生；對比度等數字一律實測。改到你滿意為止 |
+| 4 | `/spec` | 把前兩步的拍板彙整重述一次，你**再確認**後才凍成規格＋design tokens（色彩、字體、間距的唯一真相源）。跨邊界的架構決策（部署方式、表單送到哪、要不要 CMS）也在這一步落成 ADR |
+| 5 | `/tickets` | 把規格切成一張張可獨立完成的票（首頁、關於頁、聯絡表單…） |
+| 6 | `/build` | 逐票實作。UI 只准引用第 4 步的 tokens，不准另外發明顏色 |
+| 7 | `/accept` | 驗收：程式碼雙軸審查＋因為有 UI 加跑對比度等實測 gates＋獨立驗證。**只驗收、不部署** |
+| 8 | `/release` | 先部署**測試環境**（staging）→ 你在測試環境確認 → 再上**正式環境**（production） |
 
 #### 情境二：「我想做一個 CRM」（大型、多模組）
 
 | 步驟 | 你打的指令 | 目的／會發生什麼 |
 |---|---|---|
-| 1 | `/grill-me 我想做一個業務用的 CRM` | 訪談會先框範圍：有哪些模組（客戶、商機、報表）？誰在用？先做哪一塊？拍板出第一期範圍 |
-| 2 | `/domain-modeling` | CRM 名詞最容易混亂（「客戶」是公司還是聯絡人？）。先把詞彙表定死，欄位命名、畫面文案、API 全部同源 |
-| 3 | `/prototype` | 挑最核心的一兩個畫面（如商機看板）做互動原型，定調視覺與操作感 |
-| 4 | `/to-spec` | 第一期範圍寫成規格：每個流程含成功／失敗／恢復三條路徑 |
-| 5 | `/to-architecture` | 大專案的重頭戲：資料模型、模組邊界、API 契約。全部落成 ADR＋機器可驗的 schema——半年後問「當初為什麼這樣切」，答案在 `docs/decisions/` |
-| 6 | `/to-ticket` | 切票，且票不得橫跨剛畫下的模組邊界 |
-| 7 | `/implement` | 逐票實作，邏輯測試先行 |
-| 8 | `/code-review` → `/ship` | 審查、上線第一期 |
-| 9 | 回到 `/grill-me 第二期做報表模組` | 大專案就是這樣一輪一輪滾：一個模組一輪，上一輪的觀測是下一輪的證據 |
+| 1 | `/setup` | 初始化專案工具，一次 |
+| 2 | `/discover 我想做一個業務用的 CRM` | 訪談先框範圍：有哪些模組（客戶、商機、報表）？誰在用？先做哪一塊？CRM 名詞最容易混亂（「客戶」是公司還是聯絡人？），訪談中會先把**詞彙表**定死，欄位命名、畫面文案、API 全部同源 |
+| 3 | `/design` | 挑最核心的一兩個畫面（如商機看板）做互動原型，定調視覺與操作感 |
+| 4 | `/spec` | 第一期範圍凍成規格：每個流程含成功／失敗／恢復三條路徑。大專案的重頭戲在這：資料模型、模組邊界、API 契約全部落成 ADR＋機器可驗的 schema——半年後問「當初為什麼這樣切」，答案在 `docs/decisions/` |
+| 5 | `/tickets` | 切票，且票不得橫跨剛畫下的模組邊界；票一多（五張以上）會先做一次獨立的計畫審視再開工 |
+| 6 | `/build` | 逐票實作，邏輯測試先行 |
+| 7 | `/accept` → `/release` | 驗收通過後，staging → 確認 → production，上線第一期 |
+| 8 | 回到 `/discover 第二期做報表模組` | 大專案就是這樣一輪一輪滾：一個模組一輪，上一輪的觀測是下一輪的證據 |
 
 #### 情境三：小改動、會動到畫面
 
 | 步驟 | 你打的指令 | 目的／會發生什麼 |
 |---|---|---|
-| 1 | `/grill-me 訂單列表加一個匯出按鈕` | 訪談只剩兩三題：放哪裡？匯什麼格式？一分鐘拍板完 |
-| 2 | `/prototype` | 因為**動到畫面**，這個 stage 出場：按鈕位置、hover 效果做成 HTML 給你看過才定案 |
-| 3 | `/to-spec` | 小票的規格也小：按鈕的狀態表（平常／滑過／按下／處理中）＋無障礙條件，幾行而已 |
-| 4 | `/to-architecture` | AI 明講：「**此票不跨模組邊界，跳過**」。你直接打下一個 stage |
-| 5 | `/to-ticket` → `/implement` | 一張票，直接做 |
-| 6 | `/code-review` | 因為動了 UI，除了程式碼審查，加跑設計驗收：對比度實測、每個狀態檢查 |
-| 7 | `/ship` | 上線 |
+| 1 | `/discover 訂單列表加一個匯出按鈕` | 訪談只剩兩三題：放哪裡？匯什麼格式？一分鐘拍板完。結尾宣告：「動到畫面，下一步 /design」 |
+| 2 | `/design` | 按鈕位置、hover 效果做成 HTML 給你看過才定案 |
+| 3 | `/spec` | 小票的規格也小：按鈕的狀態表（平常／滑過／按下／處理中）＋無障礙條件，幾行而已。AI 判斷不跨模組邊界，架構決策明講跳過 |
+| 4 | `/tickets` → `/build` | 一張票，直接做 |
+| 5 | `/accept` | 因為動了 UI，除了程式碼審查，加跑設計驗收：對比度實測、每個狀態檢查 |
+| 6 | `/release` | staging → 確認 → production |
 
 #### 情境四：小改動、不動畫面
 
 | 步驟 | 你打的指令 | 目的／會發生什麼 |
 |---|---|---|
-| 1 | `/grill-me 匯出改成背景處理完寄 email` | 訪談重點在行為：多久算逾時？失敗要通知誰？ |
-| 2 | `/prototype` | AI 明講：「**此票無畫面，跳過 prototype**」。直接下一個 stage |
-| 3 | `/to-spec` | 規格寫清楚三條路徑：成功（信寄到）／失敗（寄不出去）／**恢復**（怎麼自動重試、使用者怎麼手動重寄） |
-| 4 | `/to-architecture` | 這票**有**架構決策（背景任務用什麼佇列？），出 ADR。若判斷不用，AI 也會明講跳過 |
-| 5 | `/to-ticket` → `/implement` | 切票實作，測試先行（/tdd） |
-| 6 | `/code-review` | 只跑程式碼軸，設計項明講略過 |
-| 7 | `/ship` | 上線 |
+| 1 | `/discover 匯出改成背景處理完寄 email` | 訪談重點在行為：多久算逾時？失敗要通知誰？結尾宣告：「**此票無畫面，跳過 /design**，下一步 /spec」 |
+| 2 | `/spec` | 規格寫清楚三條路徑：成功（信寄到）／失敗（寄不出去）／**恢復**（怎麼自動重試、使用者怎麼手動重寄）。這票**有**架構決策（背景任務用什麼佇列？），出 ADR |
+| 3 | `/tickets` → `/build` | 切票實作，測試先行（tdd） |
+| 4 | `/accept` | 只跑程式碼軸，設計項明講略過 |
+| 5 | `/release` | staging → 確認 → production |
 
-四個情境的共同點：**指令永遠是同樣八個、同樣順序**；差別只在每個 stage 的
-份量——大專案每個 stage 都重，小票有些 stage 被明講跳過。所以不用背哪些情境
-用哪些 stage，照順序打，AI 會告訴你這個 stage 要做事還是讓路。
+四個情境的共同點：**指令永遠是同樣八個、同樣順序，永遠由你打下一個**；
+差別只在每個 stage 的份量——大專案每個 stage 都重，小票有些 stage 被明講
+跳過。所以不用背哪些情境用哪些 stage，照順序打，AI 會告訴你這個 stage
+要做事還是讓路。
 
 ### 第二部分：進階說明
 
@@ -289,7 +290,7 @@ claude
 ```
 ┌─ 全域層（裝一次，處處生效）──────────────────────────┐
 │  pilotfish          多模型編排：規劃/執行/驗證分工      │
-│  Delivery Pipeline  八個 stage 工作流（本 repo 原創）          │
+│  Workbench 流程     八個 stage 交付流（本 repo 原創）   │
 ├─ plugin 層（marketplace 安裝）───────────────────────┤
 │  Matt Pocock skills TDD、除錯、code review、領域建模    │
 │  Karpathy 準則      LLM 編程缺陷矯正                    │
@@ -302,7 +303,9 @@ claude
 核心哲學：**流程與知識分離**——Matt 的 skills 是工作方法（怎麼問、
 怎麼驗證、怎麼審），ux-ui kit 是領域知識（設計怎麼做對），
 pilotfish 決定誰來做（貴模型判斷、便宜模型跑量、獨立驗證把關），
-Delivery Pipeline 是把三者接起來的那條線。
+Workbench 流程是把三者接起來的那條線：它站在「產品發想者＋PM＋
+全端工程師」的視角定義每個 stage 要產出什麼、該調用哪些成熟 skill
+當引擎。
 
 #### 協作地圖：UI/UX 與前後端怎麼交接
 
@@ -312,20 +315,20 @@ Delivery Pipeline 是把三者接起來的那條線。
 
 ```
   UX／設計                        前端              後端
-  /prototype（外觀手感）─┐
-  flow 三段（行為）      ─┤
-                         ├─ /to-spec ──→ tokens＋元件規格
-                         │                  │ 前端消費
-                         └─ /to-architecture ──→ API 契約（schema）
-                                            │ 前後端都照它寫
-  /implement：前端與後端對著契約「平行」開發，誰都不等誰的程式碼
-  /code-review：任何一側偏離契約，審查直接擋下
+  /design（外觀手感）  ─┐
+  flow 三段（行為）     ─┤
+                        ├─ /spec ──→ tokens＋元件規格
+                        │              │ 前端消費
+                        └─ /spec（架構決策）──→ API 契約（schema）
+                                       │ 前後端都照它寫
+  /build：前端與後端對著契約「平行」開發，誰都不等誰的程式碼
+  /accept：任何一側偏離契約，驗收直接擋下
 ```
 
 四條交接規則：
 
 - **設計 → 前端**：tokens 與元件規格就是介面。前端不准自己發明視覺值，
-  缺了退回 /to-spec，不准硬編碼
+  缺了退回 /spec，不准硬編碼
 - **後端 ↔ 前端**：API 契約就是介面。前端對著 schema 做假資料先開工，
   後端照 schema 實作；要改契約＝開新的架構決策（ADR 取代），
   不准在單邊程式碼裡偷改
@@ -335,18 +338,21 @@ Delivery Pipeline 是把三者接起來的那條線。
 - **產品 → 所有人**：埋點小節把事件命名一次；前端發、後端收、
   審查驗它存在
 
-#### 各 stage 規則
+#### 各 stage 規則與引擎
 
-| Stage | 職責 | 關鍵規則 |
-|---|---|---|
-| **/grill-me** | 逐題訪談、每題附推薦答案、逐項拍板 | 新領域先跑 /domain-modeling 定詞彙表；上線觀測是下一輪的證據 |
-| **/prototype*** | 可互動 HTML 原型，把玩後再定案 | 先宣告原型要回答什麼問題；數字一律實測；候選值還不是 token |
-| **/to-spec** | 定案寫成規格 | **設計系統唯一寫入 stage**：tokens 與元件規格只在此出生；flow 三段（success/failure/recovery）；埋點小節；改既有 token 必附影響分析 |
-| **/to-architecture*** | 架構決策 | 模組邊界委派 /codebase-design 思考，本 stage 記錄 ADR＋機器可驗 contract |
-| **/to-ticket** | 切票 | 票不得橫跨剛畫下的架構邊界 |
-| **/implement** | 實作 | 邏輯走 /tdd；UI 只消費既定 tokens、不硬編碼；共用元件附狀態 harness |
-| **/code-review** | 雙軸審查 | Standards＋Spec；動過 UI 加跑 WCAG gates＋親眼渲染檢查 |
-| **/ship** | 上線關卡 | 上線後觀測落檔 docs/research/ 回流 /grill-me——改善不是 stage，是路由 |
+每個 stage 由 workbench 流程定義「產出什麼」，實際做事時調用成熟的
+skill 當**引擎**（怎麼問、怎麼驗、怎麼審都歸引擎的 skill 管）：
+
+| Stage | 職責 | 主要引擎 | 關鍵規則 |
+|---|---|---|---|
+| **/setup** | 專案初始化（一次） | ux-ui kit、code-review-graph | 設計品質 CI（design-qa）是基礎設施，開成流程外的 infra 票 |
+| **/discover** | 需求拷問：發散→收斂、逐項拍板 | grilling；domain-modeling（新領域）；research（要證據）；explore-codebase（既有專案） | 唯一入口；丟參考圖時 AI 判斷是「功能參考」還是「畫面參考」；結尾宣告下一步（動畫面→/design；純邏輯→跳過 /design） |
+| **/design*** | 可互動 HTML 原型，把玩後定稿 | prototype（Matt 命題＋kit 保真度階梯）；apply-aesthetic；design-tokens 試值；條件：brandkit／redesign／ux-writing／a11y-audit | 數字一律實測（gates）；候選值還不是 token；design-review 只用在大畫面 |
+| **/spec** | 彙整前兩步→再確認→凍結 | design-tokens 固化；design-component（8 狀態規格）；to-architecture（跨邊界時，委派 codebase-design 出 ADR＋contract）；ux-writing 吃詞彙表；governance（改既有 token／元件） | **設計系統唯一寫入 stage**；flow 三段（success/failure/recovery）；埋點小節；改既有 token 必附影響分析 |
+| **/tickets** | 切票 | explore-codebase（影響面） | 票不得橫跨剛畫下的架構邊界；五張以上先做獨立計畫審視 |
+| **/build** | 逐票實作 | tdd（邏輯）；design-code（UI）；karpathy 準則常駐；token-build；refactor-safely | UI 只消費既定 tokens、缺了退回 /spec、不硬編碼；埋點跟功能一起做；共用元件附狀態 harness |
+| **/accept** | 驗收（不部署） | code-review（雙軸）；review-changes；動過 UI：gates＋design-review＋親眼渲染檢查；條件：a11y-audit／performance | 產出驗收報告；最後做一次獨立驗證；通過才准 /release |
+| **/release** | 兩段式上線 | Docker；上線前 checklist | 前置條件＝驗收通過；先 staging → 你確認 → 才 production；上線後觀測落檔 docs/research/ 回流 /discover——改善不是 stage，是路由 |
 
 #### 三條常備規則
 
@@ -364,22 +370,23 @@ Delivery Pipeline 是把三者接起來的那條線。
 
 | Skill | 用途 |
 |---|---|
-| `/grill-me`（grilling） | 逐題訪談拍板，主流程第一個 stage |
-| `/tdd` | 測試先行的紅綠燈開發，/implement 掛載 |
-| `/prototype` | 拋棄式原型答設計問題，主流程第二個 stage的思路來源 |
-| `/domain-modeling` | 建立專案詞彙表（統一語言） |
-| `/codebase-design` | 深模組設計：介面切分、seam 位置，被 /to-architecture 委派 |
-| `/code-review` | Standards＋Spec 雙軸審查，主流程第七個 stage |
+| `/grill-me`（grilling） | 逐題訪談拍板，/discover 的核心引擎 |
+| `/tdd` | 測試先行的紅綠燈開發，/build 掛載 |
+| `/prototype` | 拋棄式原型答設計問題，/design 的命題引擎 |
+| `/domain-modeling` | 建立專案詞彙表（統一語言），/discover 在新領域時調用 |
+| `/codebase-design` | 深模組設計：介面切分、seam 位置，在 /spec 內被 to-architecture 委派 |
+| `/code-review` | Standards＋Spec 雙軸審查，/accept 的核心引擎 |
 | `/research` | 對高信任來源做調查並落檔（事件驅動） |
 | `/diagnosing-bugs` | 困難 bug 的診斷循環（事件驅動） |
 | `/resolving-merge-conflicts` | 處理 merge/rebase 衝突（事件驅動） |
 
-#### 本 repo（install.sh 裝進個人 skills）
+#### 本 repo（install.sh 裝進個人 skills 與 commands）
 
-| Skill | 用途 |
+| Skill／指令 | 用途 |
 |---|---|
-| `/delivery-pipeline` | 八個 stage 的完整規則所在——CLAUDE.md 只放指標，執行任何 stage 指令前 AI 會載入它 |
-| `/to-architecture` | 架構決策 stage：記錄 ADR 與 contract，主流程第四個 stage |
+| `workbench`（skill） | 八個 stage 的完整規則所在——CLAUDE.md 只放指標，執行任何 stage 指令時 AI 會先載入它 |
+| 八個 stage 指令 | `/setup` `/discover` `/design` `/spec` `/tickets` `/build` `/accept` `/release`——裝進 `~/.claude/commands/` 的薄指令，各自載入 workbench 執行對應 stage |
+| `to-architecture`（skill） | 架構決策引擎：記錄 ADR 與 contract，在 /spec 內被調用 |
 
 #### Karpathy 準則
 
@@ -402,14 +409,14 @@ Delivery Pipeline 是把三者接起來的那條線。
 | `/image-to-code` | 參考截圖轉成符合 tokens 的程式碼 |
 | `/redesign` | 既有 UI 的審計式升級 |
 | `/migrate-design-system` | 與 Material 3／HIG／shadcn 等互轉 |
-| `/prototype` | 五階保真度的原型方法 |
+| `/prototype` | 五階保真度的原型方法，/design 的保真度引擎 |
 | `/ux-writing` | 介面文案：錯誤訊息、空狀態、微文案 |
 | `/token-build` | tokens 編譯成 CSS／Tailwind／iOS／Android |
 | `/figma-integration` | tokens 與 Figma Variables 同步 |
 | `/governance` | 設計系統版本治理（SemVer、晉升、棄用） |
 | `/performance` | Core Web Vitals 與動畫效能 |
-| `/gate` | 一鍵跑全部驗證 gates，回報真實 N/N |
-| `/ship` | 上線前總關卡，主流程第八個 stage |
+| `/gate` | 一鍵跑全部驗證 gates，回報真實 N/N，/accept 掛載 |
+| `/ship` | 上線前總關卡 checklist，/release 部署前調用 |
 
 #### code-review-graph（MCP tools）
 
@@ -429,7 +436,8 @@ Delivery Pipeline 是把三者接起來的那條線。
 ├── SETUP.md                ← 給 AI 讀的安裝手冊
 ├── install.sh              ← 檔案層安裝（冪等、自動備份）
 ├── claude-md-blocks/       ← 全域 CLAUDE.md 區塊模板
-├── skills/                 ← 八個 stage 總綱＋to-architecture（裝進 ~/.claude/skills/）
+├── skills/                 ← workbench 流程總綱＋to-architecture（裝進 ~/.claude/skills/）
+├── commands/               ← 八個 stage 指令（裝進 ~/.claude/commands/）
 └── PLAN.md                 ← 維護者交接文件
 ```
 

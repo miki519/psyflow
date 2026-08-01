@@ -2,12 +2,12 @@
 # claude-workbench installer — idempotent, safe to re-run.
 # Installs the filesystem-level parts of the workbench:
 #   1. CLAUDE.md blocks (marker-based: re-running replaces our blocks only)
-#   2. Personal skills (~/.claude/skills/)
+#   2. Personal skills (~/.claude/skills/) + slash commands (~/.claude/commands/)
 #   3. CLI tools it can install non-interactively
-# Plugin-level parts (Matt Pocock skills, Karpathy guidelines, this repo's
-# delivery-pipeline plugin) are installed INSIDE Claude Code — this script
-# prints the exact commands at the end. We deliberately never vendor or copy
-# third-party skills: their marketplace is their update channel.
+# Plugin-level parts (Matt Pocock skills, Karpathy guidelines) are installed
+# INSIDE Claude Code — this script prints the exact commands at the end.
+# We deliberately never vendor or copy third-party skills: their marketplace
+# is their update channel.
 
 set -euo pipefail
 
@@ -15,6 +15,7 @@ REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CLAUDE_DIR="${HOME}/.claude"
 CLAUDE_MD="${CLAUDE_DIR}/CLAUDE.md"
 SKILLS_DIR="${CLAUDE_DIR}/skills"
+COMMANDS_DIR="${CLAUDE_DIR}/commands"
 BLOCKS_DIR="${REPO_DIR}/claude-md-blocks"
 
 say()  { printf '\n==> %s\n' "$*"; }
@@ -58,6 +59,29 @@ backup="${CLAUDE_MD}.workbench-backup.$(date +%Y%m%d%H%M%S)"
 cp "$CLAUDE_MD" "$backup"
 note "Backed up CLAUDE.md -> $backup"
 
+# ------------------------------------------------- 0b. legacy cleanup
+# v1.x installed a "delivery-pipeline" block + skill; v2 renamed the flow to
+# "workbench". Remove the old artifacts so they don't shadow the new ones.
+legacy_begin="<!-- workbench:delivery-pipeline:begin -->"
+legacy_end="<!-- workbench:delivery-pipeline:end -->"
+if grep -qF "$legacy_begin" "$CLAUDE_MD"; then
+  if grep -qF "$legacy_end" "$CLAUDE_MD"; then
+    awk -v b="$legacy_begin" -v e="$legacy_end" '
+      index($0,b){skip=1}
+      !skip{print}
+      index($0,e){skip=0}
+    ' "$CLAUDE_MD" > "${CLAUDE_MD}.tmp"
+    mv "${CLAUDE_MD}.tmp" "$CLAUDE_MD"
+    note "removed legacy block: delivery-pipeline"
+  else
+    note "WARNING: legacy delivery-pipeline block has no end marker — remove it by hand."
+  fi
+fi
+if [ -d "$SKILLS_DIR/delivery-pipeline" ]; then
+  rm -rf "$SKILLS_DIR/delivery-pipeline"
+  note "removed legacy skill: delivery-pipeline"
+fi
+
 # ------------------------------------------------- 1. CLAUDE.md blocks
 # Each file in claude-md-blocks/ is wrapped in
 #   <!-- workbench:<id>:begin --> ... <!-- workbench:<id>:end -->
@@ -100,14 +124,25 @@ done
 # ------------------------------------------------- 2. personal skills
 say "Installing personal skills"
 # The CLAUDE.md block is a thin pointer that tells the agent to load the
-# delivery-pipeline skill for the full stage rules — both skills install as
-# personal skills so the pointer always resolves. No plugin/marketplace
-# packaging: this script IS the distribution channel for this repo.
+# workbench skill for the full stage rules — all skills install as personal
+# skills so the pointer always resolves. No plugin/marketplace packaging:
+# this script IS the distribution channel for this repo.
 for skill_dir in "$REPO_DIR"/skills/*/; do
   name="$(basename "$skill_dir")"
   mkdir -p "$SKILLS_DIR/$name"
   cp "$skill_dir/SKILL.md" "$SKILLS_DIR/$name/SKILL.md"
   note "installed skill: $name -> $SKILLS_DIR/$name"
+done
+
+# ------------------------------------------------- 2b. slash commands
+say "Installing slash commands"
+# The eight stage commands (/setup /discover /design /spec /tickets /build
+# /accept /release) are Claude Code custom commands — thin files that load
+# the workbench skill and run one stage.
+mkdir -p "$COMMANDS_DIR"
+for cmd_file in "$REPO_DIR"/commands/*.md; do
+  cp "$cmd_file" "$COMMANDS_DIR/$(basename "$cmd_file")"
+  note "installed command: /$(basename "$cmd_file" .md)"
 done
 
 # ------------------------------------------------- 3. CLI tools

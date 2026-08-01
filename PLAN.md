@@ -32,6 +32,15 @@
 
 ## 待辦（下一個 session 從這裡接）
 
+- [ ] workbench skill 四個小修（2026-08-01 盤點「任務／限制／完成定義」後定案，
+      使用者說先記著、尚未動工）：
+      ① /tickets 補：每張票必含自己的驗收條件，沒有就不算切完
+      ② /build 補完成定義：票完成＝驗收條件通過＋測試綠＋埋點已實作
+      　（共用元件另加狀態 harness）
+      ③ /setup 完成定義鎖緊：工具指令實際可執行才算裝好，不是「有回報」就好
+      ④ /discover 刪掉轉述 grilling 內部做法的那句（one question at a time…
+      　recommended answer…），只留「core engine: grilling」——違反 Ownership rule
+
 - [x] GitHub 帳號佔位符已全數替換為 `miki519`（2026-07-31，經 gh CLI 查證）
 - [ ] 在乾淨機器（或新使用者帳號）實測一次完整安裝流程
 - [ ] install.sh 實測：跑兩次驗證冪等（區塊替換、備份產生）
@@ -49,6 +58,18 @@ README 只保留各元件的一段式介紹。
 發佈管道。CLAUDE.md 區塊已瘦身為 v1.2.0 薄指標（完整規則的唯一真相源
 ＝delivery-pipeline skill）。第三方（mattpocock 等）仍走各自的 marketplace。
 若日後要恢復 plugin 路徑，manifest 格式見上方「已查證的事實」。
+
+註（2026-08-01 決策三，v2.0.0）：**流程從「借用別人的指令」改為自有流程
+workbench**——站在「產品發想者＋PM＋全端工程師」視角設計八個 stage：
+/setup → /discover → /design* → /spec → /tickets → /build → /accept →
+/release，各 stage 內部調用成熟 skill（Matt＋ux-ui kit）當引擎。
+關鍵裁決：**全手動駕駛，沒有自動模式**（初心＝新手有軌可循）；
+/discover 是唯一入口並負責路由宣告；/spec 吸收 to-architecture
+（架構決策在 /spec 內調用）；**驗收與上線分離**（/accept 只驗收、
+/release 需驗收通過，staging → 確認 → production）；指令用
+`~/.claude/commands/` 薄檔實作（不然打 /discover 會 unknown command）。
+舊 delivery-pipeline skill 與區塊已除役，install.sh 含 legacy 清除。
+借用的指令（/grill-me 等）仍可直接打、不攔截；教學只教八個自有指令。
 
 ## 相關脈絡
 

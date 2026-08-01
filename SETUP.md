@@ -7,12 +7,13 @@
 
 ## The environment you are building
 
-A Claude Code working environment centered on the eight-stage Delivery
-Pipeline:
+A Claude Code working environment centered on the eight-stage Workbench
+flow (/setup → /discover → /design* → /spec → /tickets → /build →
+/accept → /release):
 
 | Component | Layer | Install method |
 |---|---|---|
-| Delivery Pipeline (this repo) | global CLAUDE.md + personal skill | `install.sh` |
+| Workbench flow (this repo) | global CLAUDE.md + personal skill + slash commands | `install.sh` |
 | code-review-graph | CLI + per-project MCP | `install.sh` installs the CLI |
 | Matt Pocock skills | plugin | user installs inside Claude Code |
 | Karpathy guidelines | plugin | user installs inside Claude Code |
@@ -29,8 +30,12 @@ cd claude-workbench
 ```
 
 Verify:
-- `~/.claude/CLAUDE.md` now contains the `workbench:delivery-pipeline:begin` marker
-- `~/.claude/skills/to-architecture/SKILL.md` exists
+- `~/.claude/CLAUDE.md` now contains the `workbench:pipeline:begin` marker
+  (and NO legacy `workbench:delivery-pipeline` marker — the installer removes it)
+- `~/.claude/skills/workbench/SKILL.md` and
+  `~/.claude/skills/to-architecture/SKILL.md` exist
+- `~/.claude/commands/` contains the eight stage commands
+  (setup, discover, design, spec, tickets, build, accept, release)
 - `code-review-graph --version` produces output. It is a Python (PyPI)
   package installed via `uv tool install` (pipx as fallback) — NOT npm.
   If the install was skipped for lack of uv/pipx, install uv first
@@ -51,8 +56,8 @@ verify:
 `~/.claude/skills/`.)
 
 Verify: ask the user to open `/plugin` and check the installed list, or test
-directly whether `/grill-me` (from the plugin) and `/to-architecture` (from
-install.sh) appear among the available skills.
+directly whether `/grill-me` (from the plugin) and `/discover` (from
+install.sh) appear among the available commands.
 
 ### 3. Explain the per-project steps (do not run them now)
 
@@ -70,11 +75,12 @@ code-review-graph build
 
 When done, report a checklist to the user:
 
-- [ ] CLAUDE.md workbench blocks (delivery-pipeline / code-review-graph / conventions)
-- [ ] Personal skill: to-architecture
+- [ ] CLAUDE.md workbench blocks (pipeline / code-review-graph / conventions)
+- [ ] Personal skills: workbench, to-architecture
+- [ ] Slash commands: the eight stage commands in ~/.claude/commands/
 - [ ] CLI: code-review-graph
-- [ ] Plugins: mattpocock skills, delivery-pipeline (installed interactively
-      by the user, verified by you)
+- [ ] Plugins: mattpocock skills (installed interactively by the user,
+      verified by you)
 - [ ] Per-project steps explained
 
 If any item failed: report the cause and the impact honestly. Never mark a

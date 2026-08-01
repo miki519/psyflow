@@ -1,24 +1,24 @@
 ---
 name: to-architecture
-description: Turn a locked spec into architecture decisions before ticketing.
-  Use after /to-spec when the work crosses a module, service, API, or data
-  boundary. Produces ADRs and machine-checkable contracts. For logic contained
-  in one module, announce the skip instead.
+description: Turn consolidated rulings into architecture decisions before
+  ticketing. Invoked inside workbench /spec when the work crosses a module,
+  service, API, or data boundary. Produces ADRs and machine-checkable
+  contracts. For logic contained in one module, announce the skip instead.
 ---
 
-# /to-architecture — Architecture Decision Stage
+# to-architecture — Architecture Decision Engine
 
-Sits between /to-spec and /to-ticket in the delivery pipeline. The spec says
-WHAT the product does; this stage decides HOW the system is shaped to do it,
-before the work is cut into tickets.
+Runs inside workbench /spec, before /tickets. The spec says WHAT the product
+does; this engine decides HOW the system is shaped to do it, before the work
+is cut into tickets.
 
 ## Step 0 — Condition check (mandatory, out loud)
 
-Run this stage only when the ticket crosses at least one of: module
+Run this engine only when the work crosses at least one of: module
 boundary, service boundary, external API surface, data/schema ownership,
 event flow, cache layer, third-party integration. Otherwise state explicitly
-"no architectural decision in this ticket, skipping /to-architecture" and
-hand over to /to-ticket. Never skip silently; never run ceremonially.
+"no architectural decision in this work, skipping to-architecture" and let
+/spec continue. Never skip silently; never run ceremonially.
 
 ## Step 1 — Read the inputs
 
@@ -61,7 +61,7 @@ A decision with no rejected alternative is a description, not a decision.
 ## Step 4 — Hand off
 
 Summarize the decisions in one screen for the user, list the ADR/contract
-files produced, and state what /to-ticket should now slice along (tickets
+files produced, and state what /tickets should now slice along (tickets
 should not straddle a boundary you just drew). Architecture decisions here
 are subject to the same approval discipline as any plan: present, get the
 nod, then ticket.
