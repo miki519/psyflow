@@ -1,12 +1,19 @@
 <!-- workbench:conventions:begin -->
 <!-- workbench v1.0.0 -->
-## Python
+## Tooling Conventions
 
-- If a project uses Python, manage it with `uv`.
+This section presets no language or framework for any project — stack
+selection is always an open ADR decision made in each project's /spec
+(to-architecture).
+
+- If a project has chosen Python → manage it with `uv`, lint/format with
+  `ruff`, test with `pytest` (conditional: does not imply Python by default).
+- If a project has chosen Node.js/TypeScript → use `pnpm` as the package
+  manager (conditional: does not imply Node by default).
 
 ## Deployment
 
-- Deploy with Docker.
+- Deploy with Docker. (Global mandate: every project deploys containerized.)
 
 ## Coding Guidelines
 
