@@ -137,8 +137,8 @@ done
 # ------------------------------------------------- 2b. slash commands
 say "Installing slash commands"
 # The eight stage commands (/setup /discover /design /spec /tickets /build
-# /accept /release) are Claude Code custom commands — thin files that load
-# the workbench skill and run one stage.
+# /accept /release) are Claude Code custom commands — each carries its own
+# stage rules and loads the workbench skill for the cross-stage rules.
 mkdir -p "$COMMANDS_DIR"
 for cmd_file in "$REPO_DIR"/commands/*.md; do
   cp "$cmd_file" "$COMMANDS_DIR/$(basename "$cmd_file")"

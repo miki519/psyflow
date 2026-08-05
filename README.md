@@ -234,6 +234,21 @@ AI 會安裝設計知識庫（UI 專案）與程式碼知識圖，開始前先�
   /design」，你直接打 `/spec` 即可。
 - `/accept` 只驗收不部署；`/release` 一定要驗收通過才能跑。
 
+這條流程存在的理由：讓 UI/UX、前端、後端透過**契約工件**協作,
+而不是靠記憶或聊天紀錄——
+
+```
+  UX / design                      frontend            backend
+  /design (look & feel)  ─┐
+  scenario section (GWT) ─┤
+                          ├─ /spec ──→ tokens + component specs
+                          │              │ consumed by frontend
+                          └─ /spec (to-architecture) ──→ API contract
+                                         │ coded against by BOTH
+  /build:  frontend and backend build IN PARALLEL against the contracts
+  /accept: contract drift fails acceptance on either side
+```
+
 #### 情境一：「我想做一個官網」（大型、從零開始）
 
 **流程：`/setup` → `/discover` → `/design` → `/spec` → `/tickets` → `/build` → `/accept` → `/release`（全程）**

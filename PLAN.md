@@ -13,10 +13,13 @@
 2. **全手動駕駛，沒有自動模式**（初心＝新手有軌可循）。/discover 是
    唯一入口並負責路由宣告；**驗收與上線分離**（/accept 只驗收、
    /release 需驗收通過，staging → 確認 → production）。指令用
-   `~/.claude/commands/` 薄檔實作（不然打 /discover 會 unknown command）；
+   `~/.claude/commands/` 實作（不然打 /discover 會 unknown command）；
    借用的指令（/grill-me 等）仍可直接打、不攔截，教學只教八個自有指令。
-3. **Ownership rule／單一真相源**：CLAUDE.md 區塊只放薄指標，完整規則
-   的唯一真相源＝workbench skill；workbench skill 只加、不重述引擎行為。
+3. **Ownership rule／單一真相源**（2026-08-05 修訂：token 精簡拆分）：
+   CLAUDE.md 區塊只放薄指標；**跨 stage 規則的真相源＝workbench skill、
+   各 stage 規則的真相源＝該 stage 的 command 檔**（內容搬家不複製，
+   每條規則仍只存在一處）。理由：command 檔本來就會被載入,把 stage
+   細則放 skill 等於每次多付整份的 token。規則只加、不重述引擎行為。
 4. **to-architecture 與 codebase-design 的分工**：模組邊界的設計思考
    委派給 codebase-design，to-architecture 只負責記錄（ADR/contract）
    與非模組維度，在 /spec 內被調用。不重造輪子。
@@ -32,6 +35,10 @@
 8. **教學全部集中在 README**（2026-07-31）：`docs/` 已刪除，repo 內除
    README 外全是安裝資產；作者的四篇元件文章不進本 repo。
 9. **教學語言**：正體中文。
+10. **BDD 場境鏈**（2026-08-05 定案）：/discover 只採集例子（example
+    ledger，不編號）、/spec 定稿 GWT 場境並獨佔發 ID、三路徑轉職為場境
+    覆蓋檢查、票面驗收條件＝場境 ID、測試名含 ID 可 grep、/accept 機械
+    比對。場境凍結後修改走 governance，ID 永不重編。
 
 ## 決策沿革（已被取代，只供考古、不供遵循）
 
@@ -61,14 +68,12 @@
 
 ## 待辦（下一個 session 從這裡接）
 
-- [ ] workbench skill 四個小修（2026-08-01 盤點「任務／限制／完成定義」後定案，
-      使用者說先記著、尚未動工）：
-      ① /tickets 補：每張票必含自己的驗收條件，沒有就不算切完
-      ② /build 補完成定義：票完成＝驗收條件通過＋測試綠＋埋點已實作
-      　（共用元件另加狀態 harness）
-      ③ /setup 完成定義鎖緊：工具指令實際可執行才算裝好，不是「有回報」就好
-      ④ /discover 刪掉轉述 grilling 內部做法的那句（one question at a time…
-      　recommended answer…），只留「core engine: grilling」——違反 Ownership rule
+- [x] 修①②④ 已由 BDD 場境鏈一併關閉（2026-08-05）：/discover 例子帳 →
+      /spec GWT＋穩定 ID → /tickets ID＝驗收條件 → /build ID 同名測試全綠
+      ＋埋點＋harness → /accept 機械覆蓋比對。評估背景見
+      docs/research/bdd-assessment.md
+- [ ] 修③ /setup 完成定義鎖緊：工具指令實際可執行才算裝好，不是
+      「有回報」就好（2026-08-01 盤點，尚未動工）
 
 - [ ] 外部 review 待修項（2026-08-01 裁定，逐項先提方案再動工）：
       版本 pin（`uv tool install 'code-review-graph==2.3.7'`、
@@ -85,6 +90,12 @@
 
 ## 相關脈絡
 
+- **Token 精簡拆分**（2026-08-05）：workbench stage 規則下放至 command
+  檔（決策 3 修訂）；全域 CLAUDE.md 的 pilotfish Orchestration 區塊
+  （16.6KB）縮成 kernel（觸發器＋四條 always-on 地板），全文搬進
+  `~/.claude/skills/orchestration-policy/`（含 Reconciling 區塊）。
+  注意：pilotfish 重裝／升級會把完整區塊蓋回 CLAUDE.md，屆時需重拆
+  （skill 檔內有註記）。
 - 作者的全域 `~/.claude/CLAUDE.md` 已裝 v2 workbench 區塊
   （`workbench:pipeline` 標記，v1 的 `workbench:delivery-pipeline`
   已由 install.sh 清除）；個人 skills `~/.claude/skills/workbench/`、

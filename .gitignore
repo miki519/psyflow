@@ -1,3 +1,6 @@
 .DS_Store
 node_modules/
 *.log
+
+# 個人講課教材（規格：不進版控）
+docs/teaching/
