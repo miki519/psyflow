@@ -91,11 +91,10 @@
 ## 相關脈絡
 
 - **Token 精簡拆分**（2026-08-05）：workbench stage 規則下放至 command
-  檔（決策 3 修訂）；全域 CLAUDE.md 的 pilotfish Orchestration 區塊
-  （16.6KB）縮成 kernel（觸發器＋四條 always-on 地板），全文搬進
-  `~/.claude/skills/orchestration-policy/`（含 Reconciling 區塊）。
-  注意：pilotfish 重裝／升級會把完整區塊蓋回 CLAUDE.md，屆時需重拆
-  （skill 檔內有註記）。
+  檔（決策 3 修訂）。同日曾把全域 CLAUDE.md 的 pilotfish Orchestration
+  區塊拆成 kernel＋skill，**當日即撤銷還原**：pilotfish 的政策文字與
+  `~/.claude/agents/` 八個角色定義是一套咬合系統，維持上游完整性優先，
+  不做本地拆分。日後 token 精簡若要動這塊，走上游提案，不動本地。
 - 作者的全域 `~/.claude/CLAUDE.md` 已裝 v2 workbench 區塊
   （`workbench:pipeline` 標記，v1 的 `workbench:delivery-pipeline`
   已由 install.sh 清除）；個人 skills `~/.claude/skills/workbench/`、
