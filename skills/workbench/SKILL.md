@@ -67,10 +67,19 @@ artifacts instead of memory or chat history:
   (full 8-state spec, call sites converge). No speculative components.
 - **Four layers of design documentation**: tokens → component specs →
   foundations → flows. The first two alone are not a design system.
+- **CLAUDE.md is an index, not a manual**: the project's CLAUDE.md holds
+  only pointers (where the tokens live, which skills to load, where specs
+  are) — never rule bodies, design manuals, or checklists. Anything
+  always-loaded is paid for in every session and every subagent; bulk
+  content belongs in skills or `docs/`, loaded on demand. If a tool or
+  installer wants to write a manual into CLAUDE.md, redirect it.
 - **Artifact locations** (default, adapt to host project): human-facing
   artifacts in `docs/` (`domain-model.md`, `decisions/`, `prototypes/`,
   `specs/` with `tickets.md`, `research/`); token source in
   `packages/design-tokens/src/` (generated `dist/` never hand-edited);
-  shared components live with spec + harness + tests in one folder.
+  shared components live with spec + harness + tests in one folder;
+  design-direction records from the ui-ux-pro-max engine (when used) in
+  `design-system/<slug>/` (MASTER.md + per-page overrides — direction
+  input to /design, not a substitute for tokens or component specs).
   Boundary: toolchain-reachable → `packages/` / `apps/`;
   imported-by-nothing → `docs/`.

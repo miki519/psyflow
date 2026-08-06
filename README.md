@@ -176,6 +176,7 @@ claude
 | mattpocock-skills | 1.2.0 | 2026-07 |
 | andrej-karpathy-skills | 1.0.0 | 2026-07 |
 | ux-ui-agent-skills | 2.4.0 | 2026-07 |
+| uipro-cli（ui-ux-pro-max，選配） | 2.2.3 | 2026-08 |
 | pilotfish | 1.3.5 | 2026-07 |
 | workbench（本 repo） | 2.0.0 | 2026-08 |
 
@@ -213,8 +214,9 @@ claude
 /setup
 ```
 
-AI 會安裝設計知識庫（UI 專案）與程式碼知識圖，開始前先檢查 `node` 與
-`npx`，缺什麼先補齊；任何指令失敗會診斷解決而不是跳過，完成後回報結果。
+AI 會安裝設計知識庫（UI 專案；選裝風格檢索引擎）與程式碼知識圖，
+開始前先檢查 `node` 與 `npx`，缺什麼先補齊；任何指令失敗會診斷解決
+而不是跳過，完成後回報結果。
 裝完就可以直接開工（見下一節）。
 
 ## 十、工作流教學
@@ -364,6 +366,7 @@ AI 會安裝設計知識庫（UI 專案）與程式碼知識圖，開始前先�
 ├─ 專案層（每專案安裝）────────────────────────────────┤
 │  code-review-graph  程式碼知識圖，AI 只讀相關檔案       │
 │  ux-ui-agent-skills 設計系統知識庫＋WCAG 驗證 gates     │
+│  ui-ux-pro-max      風格／配色檢索引擎（選配）           │
 └──────────────────────────────────────────────────────┘
 ```
 
@@ -414,7 +417,7 @@ skill 當**引擎**（怎麼問、怎麼驗、怎麼審都歸引擎的 skill 管
 |---|---|---|---|
 | **/setup** | 專案初始化（一次） | ux-ui kit、code-review-graph | 設計品質 CI（design-qa）是基礎設施，開成流程外的 infra 票 |
 | **/discover** | 需求拷問：發散→收斂、逐項拍板 | grilling；domain-modeling（新領域）；research（要證據）；explore-codebase（既有專案） | 唯一入口；丟參考圖時 AI 判斷是「功能參考」還是「畫面參考」；結尾宣告下一步（動畫面→/design；純邏輯→跳過 /design） |
-| **/design*** | 可互動 HTML 原型，把玩後定稿 | prototype（Matt 命題＋kit 保真度階梯）；apply-aesthetic；design-tokens 試值；條件：brandkit／redesign／ux-writing／a11y-audit | 數字一律實測（gates）；候選值還不是 token；design-review 只用在大畫面 |
+| **/design*** | 可互動 HTML 原型，把玩後定稿 | ui-ux-pro-max（選配，先檢索風格／配色候選）→ apply-aesthetic 收斂方向；prototype（Matt 命題＋kit 保真度階梯）；design-tokens 試值；條件：brandkit／redesign／ux-writing／a11y-audit | 數字一律實測（gates）；候選值還不是 token；design-review 只用在大畫面 |
 | **/spec** | 彙整前兩步→再確認→凍結 | design-tokens 固化；design-component（8 狀態規格）；to-architecture（跨邊界時，委派 codebase-design 出 ADR＋contract）；ux-writing 吃詞彙表；governance（改既有 token／元件） | **設計系統唯一寫入 stage**；flow 三段（success/failure/recovery）；埋點小節；改既有 token 必附影響分析 |
 | **/tickets** | 切票 | explore-codebase（影響面） | 票不得橫跨剛畫下的架構邊界；五張以上先做獨立計畫審視 |
 | **/build** | 逐票實作 | tdd（邏輯）；design-code（UI）；karpathy 準則常駐；token-build；refactor-safely | UI 只消費既定 tokens、缺了退回 /spec、不硬編碼；埋點跟功能一起做；共用元件附狀態 harness |
@@ -484,6 +487,12 @@ skill 當**引擎**（怎麼問、怎麼驗、怎麼審都歸引擎的 skill 管
 | `/performance` | Core Web Vitals 與動畫效能 |
 | `/gate` | 一鍵跑全部驗證 gates，回報真實 N/N，/accept 掛載 |
 | `/ship` | 上線前總關卡 checklist，/release 部署前調用 |
+
+#### ui-ux-pro-max（風格檢索，UI 專案選配）
+
+| Skill | 用途 |
+|---|---|
+| `ui-ux-pro-max` | 可查詢的設計方向資料庫（styles／palettes／字型配對／UX 準則），/design 開頭先檢索候選再交 apply-aesthetic 收斂；`--persist` 落檔 `design-system/<slug>/MASTER.md`。無 QA gates——驗證仍歸 ux-ui kit |
 
 #### code-review-graph（MCP tools）
 

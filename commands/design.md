@@ -13,8 +13,13 @@ user to /spec instead.
 - Engines: **grilling** for design rulings; **prototype** (Matt) frames the
   question the prototype must answer; the design kit's **prototype** ladder
   delivers an interactive HTML page for hands-on play.
-- **apply-aesthetic** for direction; **design-tokens** for candidate values —
-  values explored here are NOT yet tokens.
+- **ui-ux-pro-max** (if installed) retrieves style/palette/typography
+  candidates first (`--design-system`, tune with `--variance/--motion/
+  --density`; persist the chosen direction with `--persist --output-dir
+  <project-root>` → `design-system/<slug>/MASTER.md`); **apply-aesthetic**
+  converges direction from those candidates (or from scratch when the
+  engine is absent); **design-tokens** for candidate values — values
+  explored here are NOT yet tokens.
 - Conditional engines: **brandkit** (new brand), **redesign** (existing UI),
   **ux-writing** (copy-heavy screens), **a11y-audit** (on demand);
   **design-review** only for large screens, not every widget.

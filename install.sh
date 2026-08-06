@@ -178,11 +178,9 @@ cat <<'EOF'
   (Also install the Karpathy guidelines and any other marketplaces you use —
    see README.md for the full stack and versions verified.)
 
-  Per-project setup (run when starting each new project):
-
-    npx ux-ui-agent-skills init                        # design kit, UI projects only
-    code-review-graph install --platform claude-code   # no 'build' yet — run it
-                                                       # later once code exists
+  Per-project setup: just run /setup inside each new project — it installs
+  the per-project tools (design kit for UI projects, optional style-search
+  engine, code-review-graph) with its own checks.
 
 EOF
 say "Re-running this script is safe: blocks are replaced in place."

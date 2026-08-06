@@ -16,7 +16,15 @@ by the stage rules below.
 - Check GitHub CLI login: `gh auth status`. Not logged in → ask the user
   to run `gh auth login` themselves (it is interactive; never run it
   headless or store credentials on their behalf), then re-check.
-- Verify `node`/`npx`, then: UI project → `npx ux-ui-agent-skills init`;
+- Verify `node`/`npx`, then: UI project →
+  `npx ux-ui-agent-skills add tokens components taste design-systems frameworks accessibility workflows content scripts skills`
+  (deliberately NOT `init`: `init` also installs the `claude` area, which
+  copies a ~36KB CLAUDE.md manual into the project root and becomes
+  always-loaded context — the manual belongs in skills, never in CLAUDE.md);
+  UI project, optionally → `npx uipro-cli init --ai claude` installs the
+  ui-ux-pro-max style/palette retrieval engine (lands in `.claude/skills/`
+  only; used by /design for direction candidates — skip freely, /design
+  works without it);
   all projects → `code-review-graph install --platform claude-code`
   (no `build` yet — the project is still empty). Diagnose failures, never
   skip silently. Report what was installed.

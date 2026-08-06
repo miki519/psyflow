@@ -13,6 +13,12 @@ rules below.
 - Each ticket's acceptance criteria = the scenario IDs it covers; a ticket
   covering no scenario states its acceptance criteria explicitly instead.
   No ticket is cut without acceptance criteria.
+- After cutting, transcribe the mapping table `scenario ID → entry point
+  (from the frozen spec's When clause, or its unit waiver) → owning ticket`
+  into the tickets document. Any blank cell = cutting is not finished; do
+  not enter /build. The direction is always scenario → ticket, never
+  "which files does each ticket touch" — a path can be unowned while every
+  file is covered. Tickets added mid-/build update this table first.
 - **explore-codebase** for impact when the project has code.
 - 5 or more tickets → run one independent plan-readiness review before
   starting (use a fresh-context reviewer role when the environment provides

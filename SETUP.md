@@ -18,7 +18,8 @@ flow (/setup → /discover → /design* → /spec → /tickets → /build →
 | code-review-graph | CLI + per-project MCP | `install.sh` installs the CLI |
 | Matt Pocock skills | plugin | user installs inside Claude Code |
 | Karpathy guidelines | plugin | user installs inside Claude Code |
-| ux-ui-agent-skills | per-project | `npx init` in each UI project |
+| ux-ui-agent-skills | per-project | `/setup` in each UI project (selective `add`, never `init` — skips the `claude` area) |
+| ui-ux-pro-max (optional) | per-project | `/setup` offers `npx uipro-cli init --ai claude` for UI projects |
 
 ## Steps
 
@@ -91,17 +92,14 @@ the eight role files (scout, Explore, executor, mech-executor,
 plan-verifier, verifier, security-reviewer, security-executor) and the
 CLAUDE.md orchestration block is present.
 
-### 4. Explain the per-project steps (do not run them now)
+### 4. Explain the per-project step (do not run it now)
 
-Tell the user that for every new project:
-
-```bash
-# UI projects only:
-npx ux-ui-agent-skills init
-# All projects:
-code-review-graph install --platform claude-code
-code-review-graph build
-```
+Tell the user that for every new project they just run `/setup` inside the
+project — it installs everything per-project (the design kit for UI
+projects via selective `add`, the optional ui-ux-pro-max engine, and
+code-review-graph) with its own checks and failure diagnosis. No manual
+commands to memorize; the exact commands live in the `/setup` stage
+command itself.
 
 ### 5. Self-check and report
 

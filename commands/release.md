@@ -14,6 +14,13 @@ stop and require it before deploying anything.
 - Pre-flight checklist (migrations, env vars, rollback plan), then deploy to
   **staging** (Docker) → verify on staging → the user confirms → deploy to
   **production** (Docker). Two environments, always in that order.
+- Staging verification is deployment-layer only: migration results plus a
+  smoke run that walks the core user path once end to end (login, primary
+  flow) — it proves the deployed configuration actually activates the
+  feature, the class of bug /accept's environment cannot surface. Do NOT
+  re-verify the feature layer: cite /accept's passed report while its
+  commit hash matches what was deployed; on mismatch, stop and require
+  /accept again.
 - After release: file observations (metrics, errors, feedback) into
   `docs/research/` for the next /discover — improvement is not a stage, it
   is this routing rule.

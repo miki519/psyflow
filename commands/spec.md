@@ -26,10 +26,19 @@ freezing anything.
 - Every feature spec includes a **scenario section** — ledger examples are
   promoted to Given/When/Then scenarios, each with a stable ID (e.g.
   `EXP-EXPORT-03`) issued only here; the set must cover success / failure /
-  recovery. One or two boundary-revealing scenarios per rule — no
-  exhaustive enumeration, obvious CRUD paths stay out. Scenarios freeze
-  with the spec — and an **instrumentation section** (what to measure after
-  release). UI specs include token mapping, an interaction-state table, and
-  a11y acceptance criteria.
+  recovery. Each scenario's When clause **names the user-visible entry
+  point it drives** (HTTP route, CLI command, or screen action) as part of
+  the frozen text; a scenario that genuinely has none instead carries a
+  `unit waiver: <one-line reason>` line (changing either later goes through
+  governance like any spec change). One or two boundary-revealing scenarios
+  per rule — no exhaustive enumeration, obvious CRUD paths stay out.
+  Scenarios freeze with the spec — and an **instrumentation section** (what
+  to measure after release). UI specs include token mapping, an
+  interaction-state table, and a11y acceptance criteria.
+- Before freezing, run the known-failure checklist against the spec: every
+  new function/endpoint has a caller landing in this same round; every
+  referenced token exists; every migration is actually reversible; every
+  piece of work has an owner including its test files. (Project-specific
+  failure modes flow back via /release observations, not this list.)
 
 Additional context from the user: $ARGUMENTS
