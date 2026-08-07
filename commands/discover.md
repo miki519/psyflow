@@ -1,8 +1,8 @@
 ---
-description: "Workbench stage 1 — requirement grilling (sole entry point)"
+description: "Psyflow stage 1 — requirement grilling (sole entry point)"
 ---
 
-Load the `workbench` skill with the Skill tool for the cross-stage rules,
+Load the `psyflow` skill with the Skill tool for the cross-stage rules,
 then execute stage 1 (/discover — requirement grilling, diverge → converge)
 by the stage rules below, including the routing announcement at the end.
 

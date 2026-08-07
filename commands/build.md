@@ -1,8 +1,8 @@
 ---
-description: "Workbench stage 5 — implement, ticket by ticket"
+description: "Psyflow stage 5 — implement, ticket by ticket"
 ---
 
-Load the `workbench` skill with the Skill tool for the cross-stage rules,
+Load the `psyflow` skill with the Skill tool for the cross-stage rules,
 then execute stage 5 (/build — implement) by the stage rules below.
 
 ## Stage rules

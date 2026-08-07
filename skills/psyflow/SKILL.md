@@ -1,12 +1,12 @@
 ---
-name: workbench
-description: Load the workbench delivery flow's cross-stage rules.
-  Use when the user invokes any workbench stage command (/setup, /discover,
+name: psyflow
+description: Load the psyflow delivery flow's cross-stage rules.
+  Use when the user invokes any psyflow stage command (/setup, /discover,
   /design, /spec, /tickets, /build, /accept, /release), or when the user
   asks how the delivery workflow is organized.
 ---
 
-# Workbench Flow — cross-stage rules
+# Psyflow Flow — cross-stage rules
 
 /setup → /discover → /design* → /spec → /tickets → /build → /accept → /release
 

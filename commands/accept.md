@@ -1,8 +1,8 @@
 ---
-description: "Workbench stage 6 — acceptance review (no deployment)"
+description: "Psyflow stage 6 — acceptance review (no deployment)"
 ---
 
-Load the `workbench` skill with the Skill tool for the cross-stage rules,
+Load the `psyflow` skill with the Skill tool for the cross-stage rules,
 then execute stage 6 (/accept — acceptance) by the stage rules below. This
 stage never deploys anything.
 

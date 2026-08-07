@@ -1,8 +1,8 @@
 ---
-description: "Workbench stage 3 — consolidate rulings and freeze the spec"
+description: "Psyflow stage 3 — consolidate rulings and freeze the spec"
 ---
 
-Load the `workbench` skill with the Skill tool for the cross-stage rules,
+Load the `psyflow` skill with the Skill tool for the cross-stage rules,
 then execute stage 3 (/spec — consolidate and freeze) by the stage rules
 below: re-present the consolidated result for final confirmation before
 freezing anything.

@@ -1,8 +1,8 @@
 ---
-description: "Workbench stage 0 — initialize this project's working environment"
+description: "Psyflow stage 0 — initialize this project's working environment"
 ---
 
-Load the `workbench` skill with the Skill tool for the cross-stage rules,
+Load the `psyflow` skill with the Skill tool for the cross-stage rules,
 then execute stage 0 (/setup — project initialization, once per project)
 by the stage rules below.
 

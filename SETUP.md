@@ -7,37 +7,37 @@
 
 ## The environment you are building
 
-A Claude Code working environment centered on the eight-stage Workbench
+A Claude Code working environment centered on the eight-stage Psyflow
 flow (/setup → /discover → /design* → /spec → /tickets → /build →
-/accept → /release):
+/accept → /release), installed as the `psyflow` plugin and invoked
+namespaced: `/psyflow:setup`, `/psyflow:discover`, …
 
 | Component | Layer | Install method |
 |---|---|---|
-| Workbench flow (this repo) | global CLAUDE.md + personal skill + slash commands | `install.sh` |
+| psyflow flow (this repo) | plugin (eight stage commands + psyflow / to-architecture skills) | user installs inside Claude Code |
+| psyflow CLAUDE.md blocks | global CLAUDE.md (pointer + conventions) | `install.sh` |
 | pilotfish | global CLAUDE.md block + `~/.claude/agents/` | upstream agent-driven install, user approves the merge plan |
 | code-review-graph | CLI + per-project MCP | `install.sh` installs the CLI |
 | Matt Pocock skills | plugin | user installs inside Claude Code |
 | Karpathy guidelines | plugin | user installs inside Claude Code |
-| ux-ui-agent-skills | per-project | `/setup` in each UI project (selective `add`, never `init` — skips the `claude` area) |
-| ui-ux-pro-max (optional) | per-project | `/setup` offers `npx uipro-cli init --ai claude` for UI projects |
+| ux-ui-agent-skills | per-project | `/psyflow:setup` in each UI project (selective `add`, never `init` — skips the `claude` area) |
+| ui-ux-pro-max (optional) | per-project | `/psyflow:setup` offers `npx uipro-cli init --ai claude` for UI projects |
 
 ## Steps
 
 ### 1. Run the filesystem-layer installer
 
 ```bash
-git clone https://github.com/miki519/claude-workbench
-cd claude-workbench
+git clone https://github.com/miki519/psyflow
+cd psyflow
 ./install.sh
 ```
 
 Verify:
-- `~/.claude/CLAUDE.md` now contains the `workbench:pipeline:begin` marker
-  (and NO legacy `workbench:delivery-pipeline` marker — the installer removes it)
-- `~/.claude/skills/workbench/SKILL.md` and
-  `~/.claude/skills/to-architecture/SKILL.md` exist
-- `~/.claude/commands/` contains the eight stage commands
-  (setup, discover, design, spec, tickets, build, accept, release)
+- `~/.claude/CLAUDE.md` now contains the `psyflow:pipeline:begin` marker
+  (and NO legacy `workbench:*` or `workbench:delivery-pipeline` markers —
+  the installer removes them, along with any workbench-era copies in
+  `~/.claude/skills/` and `~/.claude/commands/`)
 - `code-review-graph --version` produces output. It is a Python (PyPI)
   package installed via `uv tool install` (pipx as fallback) — NOT npm.
   If the install was skipped for lack of uv/pipx, install uv first
@@ -51,17 +51,16 @@ the user's behalf. List the commands, wait for the user to run them, then
 verify:
 
 ```
+/plugin marketplace add miki519/psyflow
+/plugin install psyflow@psyflow
 /plugin marketplace add mattpocock/skills
 /plugin marketplace add forrestchang/andrej-karpathy-skills
 ```
 
-(This repo's own skills need no plugin — `install.sh` already placed them in
-`~/.claude/skills/`.)
-
 Verify: ask the user to open `/plugin` and check the installed list, or test
-directly whether `/grill-me` (from mattpocock), the
-`andrej-karpathy-skills:karpathy-guidelines` skill, and `/discover` (from
-install.sh) appear among the available commands/skills.
+directly whether `/psyflow:discover` (this repo's plugin), `/grill-me`
+(from mattpocock), and the `andrej-karpathy-skills:karpathy-guidelines`
+skill appear among the available commands/skills.
 
 ### 3. Guide the user through pilotfish installation
 
@@ -94,20 +93,22 @@ CLAUDE.md orchestration block is present.
 
 ### 4. Explain the per-project step (do not run it now)
 
-Tell the user that for every new project they just run `/setup` inside the
-project — it installs everything per-project (the design kit for UI
-projects via selective `add`, the optional ui-ux-pro-max engine, and
+Tell the user that for every new project they just run `/psyflow:setup`
+inside the project — it installs everything per-project (the design kit for
+UI projects via selective `add`, the optional ui-ux-pro-max engine, and
 code-review-graph) with its own checks and failure diagnosis. No manual
-commands to memorize; the exact commands live in the `/setup` stage
-command itself.
+commands to memorize; the exact commands live in the setup stage command
+itself.
 
 ### 5. Self-check and report
 
 When done, report a checklist to the user:
 
-- [ ] CLAUDE.md workbench blocks (pipeline / code-review-graph / conventions)
-- [ ] Personal skills: workbench, to-architecture
-- [ ] Slash commands: the eight stage commands in ~/.claude/commands/
+- [ ] CLAUDE.md psyflow blocks (pipeline / code-review-graph / conventions)
+- [ ] Plugin: psyflow (eight stage commands + psyflow / to-architecture
+      skills, installed interactively by the user, verified by you)
+- [ ] No legacy workbench-era copies left in `~/.claude/skills/` or
+      `~/.claude/commands/`
 - [ ] CLI: code-review-graph
 - [ ] Plugins: mattpocock skills + Karpathy guidelines (installed
       interactively by the user, verified by you)
@@ -122,20 +123,21 @@ failed item as done.
 
 - **This manual doubles as the update procedure.** When the user asks to
   update (rather than install), run the same steps: pull the latest repo
-  (or re-clone) and re-run `install.sh`; offer to update third-party
-  marketplaces too (`/plugin marketplace update <name>`, run by the user).
-  If working inside a project, also offer to update project tools
-  (`uv tool upgrade code-review-graph` — it is a PyPI package, not npm —
-  then re-run `code-review-graph build`; major versions can invalidate the
-  old graph). Third-party upstream
-  changes may drift from the README teaching — mention the verified-versions
-  table if the user hits inconsistencies. Everything is designed to be
-  re-run safely. Report what was updated at the end.
+  (or re-clone) and re-run `install.sh` for the CLAUDE.md blocks; the flow
+  itself updates via `/plugin marketplace update psyflow` (run by the
+  user), and offer to update third-party marketplaces the same way
+  (`/plugin marketplace update <name>`). If working inside a project, also
+  offer to update project tools (`uv tool upgrade code-review-graph` — it
+  is a PyPI package, not npm — then re-run `code-review-graph build`;
+  major versions can invalidate the old graph). Third-party upstream
+  changes may drift from the README teaching — mention the
+  verified-versions table if the user hits inconsistencies. Everything is
+  designed to be re-run safely. Report what was updated at the end.
 - `install.sh` is idempotent and safe to re-run (marker-based blocks are
   replaced in place; CLAUDE.md is backed up automatically each run).
-  User customizations OUTSIDE the workbench marker blocks are never touched;
+  User customizations OUTSIDE the psyflow marker blocks are never touched;
   anything inside the markers is replaced — warn the user if you detect
-  hand-edits inside a workbench block before replacing it.
+  hand-edits inside a psyflow block before replacing it.
 - Never copy third-party skill content into the user's directories — their
   marketplace is their update channel; a copy strands the user on a stale
   version forever.

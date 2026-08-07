@@ -1,14 +1,14 @@
 ---
 name: to-architecture
 description: Turn consolidated rulings into architecture decisions before
-  ticketing. Invoked inside workbench /spec when the work crosses a module,
+  ticketing. Invoked inside psyflow /spec when the work crosses a module,
   service, API, or data boundary. Produces ADRs and machine-checkable
   contracts. For logic contained in one module, announce the skip instead.
 ---
 
 # to-architecture — Architecture Decision Engine
 
-Runs inside workbench /spec, before /tickets. The spec says WHAT the product
+Runs inside psyflow /spec, before /tickets. The spec says WHAT the product
 does; this engine decides HOW the system is shaped to do it, before the work
 is cut into tickets.
 

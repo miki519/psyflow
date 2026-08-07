@@ -1,0 +1,11 @@
+{
+  "name": "psyflow",
+  "owner": { "name": "Miki", "url": "https://github.com/miki519" },
+  "plugins": [
+    {
+      "name": "psyflow",
+      "source": "./",
+      "description": "Eight-stage delivery flow — grilling-driven discovery, frozen specs, ticketed builds, staged releases."
+    }
+  ]
+}

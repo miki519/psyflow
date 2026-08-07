@@ -5,16 +5,18 @@
 
 ## 已定案的關鍵決策（現行 v2.0.0，不要重新開放）
 
-1. **八 stage 自有流程 workbench**（2026-08-01 定案，取代 v1 借用指令的
-   八站，見決策沿革）：/setup → /discover → /design* → /spec →
+1. **八 stage 自有流程 psyflow**（2026-08-01 定案，取代 v1 借用指令的
+   八站，見決策沿革；2026-08-07 由 workbench 更名 psyflow，見決策
+   11）：/setup → /discover → /design* → /spec →
    /tickets → /build → /accept → /release。站在「產品發想者＋PM＋
    全端工程師」視角設計，各 stage 內部調用成熟 skill（Matt＋ux-ui kit）
    當引擎。條件 stage（*）必須「明講跳過」，不得靜默。
 2. **全手動駕駛，沒有自動模式**（初心＝新手有軌可循）。/discover 是
    唯一入口並負責路由宣告；**驗收與上線分離**（/accept 只驗收、
-   /release 需驗收通過，staging → 確認 → production）。指令用
-   `~/.claude/commands/` 實作（不然打 /discover 會 unknown command）；
-   借用的指令（/grill-me 等）仍可直接打、不攔截，教學只教八個自有指令。
+   /release 需驗收通過，staging → 確認 → production）。指令實作
+   2026-08-07 起隨 plugin 安裝（`/psyflow:<stage>` 命名空間，見決策
+   11；此前複製進 `~/.claude/commands/`）；借用的指令（/grill-me 等）
+   仍可直接打、不攔截，教學只教八個自有指令。
 3. **Ownership rule／單一真相源**（2026-08-05 修訂：token 精簡拆分）：
    CLAUDE.md 區塊只放薄指標；**跨 stage 規則的真相源＝workbench skill、
    各 stage 規則的真相源＝該 stage 的 command 檔**（內容搬家不複製，
@@ -28,10 +30,9 @@
    走上游 runbook 安裝（含使用者核准閘門），不手抄檔案。
 6. **雙軌安裝**：curl/clone＋install.sh（檔案層）＋「讓 Claude 讀
    SETUP.md 幫你裝」（AI-native，教學受眾主打）。
-7. **放棄本 repo 的 plugin/marketplace 發佈路徑**（2026-07-31，作者暫無
-   此需求）：`.claude-plugin/` 與 `plugins/` 已刪除，skills 在頂層
-   `skills/`，install.sh 直接複製進 `~/.claude/skills/`，它就是唯一
-   發佈管道。若日後要恢復，manifest 格式見「已查證的事實」。
+7. ~~**放棄本 repo 的 plugin/marketplace 發佈路徑**~~（2026-07-31 定案，
+   **2026-08-07 被決策 11 推翻**——repo 恢復 plugin 發佈，install.sh
+   退回檔案層專用。原決策僅供考古。）
 8. **教學全部集中在 README**（2026-07-31）：`docs/` 已刪除，repo 內除
    README 外全是安裝資產；作者的四篇元件文章不進本 repo。
 9. **教學語言**：正體中文。
@@ -39,6 +40,16 @@
     ledger，不編號）、/spec 定稿 GWT 場境並獨佔發 ID、三路徑轉職為場境
     覆蓋檢查、票面驗收條件＝場境 ID、測試名含 ID 可 grep、/accept 機械
     比對。場境凍結後修改走 governance，ID 永不重編。
+11. **plugin 化＋更名 psyflow**（2026-08-07 定案，推翻決策 7）：repo 即
+    marketplace（`.claude-plugin/plugin.json`＋`marketplace.json`，
+    plugin 名與 marketplace 名皆 `psyflow`，version 明定、發版手動
+    bump）；八個 stage 指令與 psyflow／to-architecture skills 隨 plugin
+    安裝，指令一律命名空間 `/psyflow:<stage>`（plugin 指令無裸短名）。
+    install.sh 瘦身為 CLAUDE.md 區塊＋code-review-graph CLI，並清理
+    workbench 時代複製進 `~/.claude/` 的 skills／commands 與舊
+    `workbench:*` marker 區塊（marker 前綴改 `psyflow:*`）。GitHub repo
+    同步更名 `miki519/psyflow`。安裝入口：`/plugin marketplace add
+    miki519/psyflow` → `/plugin install psyflow@psyflow`。
 
 ## 決策沿革（已被取代，只供考古、不供遵循）
 
@@ -61,8 +72,10 @@
 - `.claude/settings.json` 的 `extraKnownMarketplaces`＋`enabledPlugins`
   （v2.1.195+）可讓專案開啟時自動提示裝 plugin（starter-template 曾用此機制，
   2026-07-31 改版時整個刪除，僅在 README 第八節留一行進階備註）。
-- manifest 格式範例已照官方文件寫入 .claude-plugin/（該目錄現已刪除，
-  格式記錄僅存於此）。
+- manifest 格式範例已照官方文件寫入 .claude-plugin/（2026-07-31 曾刪除，
+  2026-08-07 隨決策 11 重建並經 claude-code-guide 重新查證：plugin
+  指令一律 `/<plugin>:<command>` 命名空間、`source: "./"` 指 repo 根、
+  commands/ 與 skills/ 頂層目錄自動探索）。
 - pilotfish 有公開安裝源：`Nanako0129/pilotfish`（2026-08-01 查證，
   pin v1.3.5，安裝引導已寫入 SETUP.md §3）。
 
@@ -95,9 +108,8 @@
   區塊拆成 kernel＋skill，**當日即撤銷還原**：pilotfish 的政策文字與
   `~/.claude/agents/` 八個角色定義是一套咬合系統，維持上游完整性優先，
   不做本地拆分。日後 token 精簡若要動這塊，走上游提案，不動本地。
-- 作者的全域 `~/.claude/CLAUDE.md` 已裝 v2 workbench 區塊
-  （`workbench:pipeline` 標記，v1 的 `workbench:delivery-pipeline`
-  已由 install.sh 清除）；個人 skills `~/.claude/skills/workbench/`、
-  `~/.claude/skills/to-architecture/` 已就位。
+- 作者的全域 `~/.claude/CLAUDE.md` 目前仍是 workbench 時代區塊與個人
+  skills／commands 副本——**尚待重跑 install.sh**（會換成 `psyflow:*`
+  區塊並清理舊副本）＋安裝 psyflow plugin（決策 11 的遷移步驟）。
 - PsyConseq 專案是 pipeline 的第一個實戰場（重設計進行中，
   視覺基調已定案，見該專案記憶 project_redesign_2026-07）。

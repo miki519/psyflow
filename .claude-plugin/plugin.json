@@ -1,0 +1,7 @@
+{
+  "name": "psyflow",
+  "description": "Eight-stage delivery flow — /setup → /discover → /design* → /spec → /tickets → /build → /accept → /release — one slash command per stage, always driven manually.",
+  "version": "2.0.0",
+  "author": { "name": "Miki", "url": "https://github.com/miki519" },
+  "repository": "https://github.com/miki519/psyflow"
+}

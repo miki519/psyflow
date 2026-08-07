@@ -1,8 +1,8 @@
 ---
-description: "Workbench stage 2 — UI/UX discussion and interactive prototype"
+description: "Psyflow stage 2 — UI/UX discussion and interactive prototype"
 ---
 
-Load the `workbench` skill with the Skill tool for the cross-stage rules,
+Load the `psyflow` skill with the Skill tool for the cross-stage rules,
 then execute stage 2 (/design — UI/UX discussion, conditional on a visible
 screen or interaction) by the stage rules below. If the current work has no
 visible screen or interaction, announce the skip out loud and point the

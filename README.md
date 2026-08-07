@@ -1,7 +1,8 @@
-# Claude Workbench
+# Psyflow
 
 從零開始建立一套完整、可複製的 Claude Code 工作環境——從訂閱、安裝，
-到一條把需求做到上線的 **八個 stage 的 Workbench 交付流程**。
+到一條把需求做到上線的 **八個 stage 的 Psyflow 交付流程**
+（裝成 plugin 後以 `/psyflow:discover` 這類命名空間指令驅動）。
 照著本文由上而下做一遍，你會得到跟作者一樣的工作環境。
 
 ## 為什麼要做這個工作流
@@ -160,10 +161,10 @@ claude
 
 登入後，把這句話貼進 Claude Code：
 
-> 請讀取 https://github.com/miki519/claude-workbench 的 SETUP.md，照它配置我的環境。
+> 請讀取 https://github.com/miki519/psyflow 的 SETUP.md，照它配置我的環境。
 
 你的 Claude 會自己下載 repo、執行安裝、引導你完成 plugin 步驟
-（Matt Pocock skills 與 Karpathy 準則，`/plugin` 是互動指令、要你自己貼）、
+（psyflow 本體、Matt Pocock skills 與 Karpathy 準則，`/plugin` 是互動指令、要你自己貼）、
 再帶你裝 pilotfish（它有自己的安裝流程：AI 讀上游 runbook、
 列出要改哪些檔、**你核准後才寫入**），最後回報驗收清單。
 
@@ -178,14 +179,14 @@ claude
 | ux-ui-agent-skills | 2.4.0 | 2026-07 |
 | uipro-cli（ui-ux-pro-max，選配） | 2.2.3 | 2026-08 |
 | pilotfish | 1.3.5 | 2026-07 |
-| workbench（本 repo） | 2.0.0 | 2026-08 |
+| psyflow（本 repo，plugin） | 2.0.0 | 2026-08 |
 
 ### 更新這套環境
 
 所有元件都**不會自動更新**——這是特性：你的環境保持在驗證過的
 版本組合，不會一覺醒來行為變了。想更新時，把這句話貼進 Claude Code：
 
-> 請讀取 https://github.com/miki519/claude-workbench 的 SETUP.md，照它更新我的環境。
+> 請讀取 https://github.com/miki519/psyflow 的 SETUP.md，照它更新我的環境。
 
 AI 會拉最新版、重跑安裝、引導你完成 plugin 更新；動到你自訂的內容前
 會先警告，完成後回報更新了什麼。
@@ -359,8 +360,9 @@ AI 會安裝設計知識庫（UI 專案；選裝風格檢索引擎）與程式�
 ```
 ┌─ 全域層（裝一次，處處生效）──────────────────────────┐
 │  pilotfish          多模型編排：規劃/執行/驗證分工      │
-│  Workbench 流程     八個 stage 交付流（本 repo 原創）   │
+│  psyflow 指標塊     CLAUDE.md 薄指標＋工具慣例          │
 ├─ plugin 層（marketplace 安裝）───────────────────────┤
+│  Psyflow 流程       八個 stage 交付流（本 repo 原創）   │
 │  Matt Pocock skills TDD、除錯、code review、領域建模    │
 │  Karpathy 準則      LLM 編程缺陷矯正                    │
 ├─ 專案層（每專案安裝）────────────────────────────────┤
@@ -373,7 +375,7 @@ AI 會安裝設計知識庫（UI 專案；選裝風格檢索引擎）與程式�
 核心哲學：**流程與知識分離**——Matt 的 skills 是工作方法（怎麼問、
 怎麼驗證、怎麼審），ux-ui kit 是領域知識（設計怎麼做對），
 pilotfish 決定誰來做（貴模型判斷、便宜模型跑量、獨立驗證把關），
-Workbench 流程是把三者接起來的那條線：它站在「產品發想者＋PM＋
+Psyflow 流程是把三者接起來的那條線：它站在「產品發想者＋PM＋
 全端工程師」的視角定義每個 stage 要產出什麼、該調用哪些成熟 skill
 當引擎。
 
@@ -410,7 +412,7 @@ Workbench 流程是把三者接起來的那條線：它站在「產品發想者�
 
 #### 各 stage 規則與引擎
 
-每個 stage 由 workbench 流程定義「產出什麼」，實際做事時調用成熟的
+每個 stage 由 psyflow 流程定義「產出什麼」，實際做事時調用成熟的
 skill 當**引擎**（怎麼問、怎麼驗、怎麼審都歸引擎的 skill 管）：
 
 | Stage | 職責 | 主要引擎 | 關鍵規則 |
@@ -452,12 +454,12 @@ skill 當**引擎**（怎麼問、怎麼驗、怎麼審都歸引擎的 skill 管
 | `/wizard` | 遇到只有人能做的步驟（憑證、CI secrets、dashboard 操作）時，生成互動式精靈腳本帶人完成，秘密值不經過對話（事件驅動，任何 stage 都可能觸發） |
 | `/to-questionnaire` | 答案在第三方（客戶、領域專家）手上的 open question，轉成問卷文件落在 `docs/research/`，/discover 掛載（僅手動） |
 
-#### 本 repo（install.sh 裝進個人 skills 與 commands）
+#### 本 repo（psyflow plugin）
 
 | Skill／指令 | 用途 |
 |---|---|
-| `workbench`（skill） | 八個 stage 的完整規則所在——CLAUDE.md 只放指標，執行任何 stage 指令時 AI 會先載入它 |
-| 八個 stage 指令 | `/setup` `/discover` `/design` `/spec` `/tickets` `/build` `/accept` `/release`——裝進 `~/.claude/commands/` 的薄指令，各自載入 workbench 執行對應 stage |
+| `psyflow`（skill） | 八個 stage 的完整規則所在——CLAUDE.md 只放指標，執行任何 stage 指令時 AI 會先載入它 |
+| 八個 stage 指令 | `/psyflow:setup` `/psyflow:discover` `/psyflow:design` `/psyflow:spec` `/psyflow:tickets` `/psyflow:build` `/psyflow:accept` `/psyflow:release`——plugin 帶入的薄指令，各自載入 psyflow skill 執行對應 stage |
 | `to-architecture`（skill） | 架構決策引擎：記錄 ADR 與 contract，在 /spec 內被調用 |
 
 #### Karpathy 準則
@@ -512,10 +514,11 @@ skill 當**引擎**（怎麼問、怎麼驗、怎麼審都歸引擎的 skill 管
 ```
 ├── README.md               ← 本文（教學＋入口）
 ├── SETUP.md                ← 給 AI 讀的安裝手冊
-├── install.sh              ← 檔案層安裝（冪等、自動備份）
+├── install.sh              ← 檔案層安裝：CLAUDE.md 區塊＋CLI（冪等、自動備份）
+├── .claude-plugin/         ← plugin.json＋marketplace.json（repo 即 marketplace）
 ├── claude-md-blocks/       ← 全域 CLAUDE.md 區塊模板
-├── skills/                 ← workbench 流程總綱＋to-architecture（裝進 ~/.claude/skills/）
-├── commands/               ← 八個 stage 指令（裝進 ~/.claude/commands/）
+├── skills/                 ← psyflow 流程總綱＋to-architecture（隨 plugin 安裝）
+├── commands/               ← 八個 stage 指令（隨 plugin 安裝，帶 psyflow: 命名空間）
 └── PLAN.md                 ← 維護者交接文件
 ```
 

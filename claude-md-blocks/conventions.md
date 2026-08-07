@@ -1,5 +1,5 @@
-<!-- workbench:conventions:begin -->
-<!-- workbench v1.0.0 -->
+<!-- psyflow:conventions:begin -->
+<!-- psyflow v1.0.0 -->
 ## Tooling Conventions
 
 This section presets no language or framework for any project — stack
@@ -18,4 +18,4 @@ selection is always an open ADR decision made in each project's /spec
 ## Coding Guidelines
 
 - When writing code, apply the `andrej-karpathy-skills:karpathy-guidelines` skill.
-<!-- workbench:conventions:end -->
+<!-- psyflow:conventions:end -->

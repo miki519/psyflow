@@ -1,8 +1,8 @@
 ---
-description: "Workbench stage 4 — cut the frozen spec into tickets"
+description: "Psyflow stage 4 — cut the frozen spec into tickets"
 ---
 
-Load the `workbench` skill with the Skill tool for the cross-stage rules,
+Load the `psyflow` skill with the Skill tool for the cross-stage rules,
 then execute stage 4 (/tickets — cut the spec into tickets) by the stage
 rules below.
 

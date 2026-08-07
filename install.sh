@@ -1,13 +1,12 @@
 #!/usr/bin/env bash
-# claude-workbench installer — idempotent, safe to re-run.
-# Installs the filesystem-level parts of the workbench:
+# psyflow installer — idempotent, safe to re-run.
+# Installs the parts the plugin system cannot carry:
 #   1. CLAUDE.md blocks (marker-based: re-running replaces our blocks only)
-#   2. Personal skills (~/.claude/skills/) + slash commands (~/.claude/commands/)
-#   3. CLI tools it can install non-interactively
-# Plugin-level parts (Matt Pocock skills, Karpathy guidelines) are installed
-# INSIDE Claude Code — this script prints the exact commands at the end.
-# We deliberately never vendor or copy third-party skills: their marketplace
-# is their update channel.
+#   2. CLI tools it can install non-interactively (code-review-graph)
+# The flow itself (eight stage commands + psyflow/to-architecture skills)
+# ships as the `psyflow` PLUGIN — installed INSIDE Claude Code; this script
+# prints the exact commands at the end. Third-party skills are likewise
+# never vendored: their marketplace is their update channel.
 
 set -euo pipefail
 
@@ -21,6 +20,25 @@ BLOCKS_DIR="${REPO_DIR}/claude-md-blocks"
 say()  { printf '\n==> %s\n' "$*"; }
 note() { printf '    %s\n' "$*"; }
 
+# Remove one marker-delimited block from CLAUDE.md (both markers required).
+remove_block() {
+  local begin="$1" end="$2" label="$3"
+  if grep -qF "$begin" "$CLAUDE_MD"; then
+    if ! grep -qF "$end" "$CLAUDE_MD"; then
+      note "WARNING $label: begin marker found but end marker missing."
+      note "        Skipping to avoid deleting user content — fix by hand."
+      return 1
+    fi
+    awk -v b="$begin" -v e="$end" '
+      index($0,b){skip=1}
+      !skip{print}
+      index($0,e){skip=0}
+    ' "$CLAUDE_MD" > "${CLAUDE_MD}.tmp"
+    mv "${CLAUDE_MD}.tmp" "$CLAUDE_MD"
+    note "removed block: $label"
+  fi
+}
+
 # ---------------------------------------------------------------- 0. checks
 say "Checking prerequisites"
 # Hard requirement: git only (everything this script writes needs no runtime).
@@ -31,7 +49,7 @@ else
   exit 1
 fi
 # Advisory checks — used by LATER per-project steps, not by this script's
-# core work (CLAUDE.md blocks + skills). Their absence must not block those.
+# core work (CLAUDE.md blocks).
 #   node/npm — npx ux-ui-agent-skills (per-project design kit)
 #   uv/pipx  — code-review-graph is a Python (PyPI) package, NOT on npm
 for cmd in node npm; do
@@ -47,105 +65,68 @@ if command -v uv >/dev/null 2>&1; then
 elif command -v pipx >/dev/null 2>&1; then
   note "pipx: $(command -v pipx)"
 else
-  note "note: neither uv nor pipx found — step 3 (code-review-graph) will be"
+  note "note: neither uv nor pipx found — step 2 (code-review-graph) will be"
   note "      skipped. Install uv first: https://docs.astral.sh/uv/"
 fi
 
-mkdir -p "$CLAUDE_DIR" "$SKILLS_DIR"
+mkdir -p "$CLAUDE_DIR"
 [ -f "$CLAUDE_MD" ] || touch "$CLAUDE_MD"
 
 # Backup once per run.
-backup="${CLAUDE_MD}.workbench-backup.$(date +%Y%m%d%H%M%S)"
+backup="${CLAUDE_MD}.psyflow-backup.$(date +%Y%m%d%H%M%S)"
 cp "$CLAUDE_MD" "$backup"
 note "Backed up CLAUDE.md -> $backup"
 
 # ------------------------------------------------- 0b. legacy cleanup
-# v1.x installed a "delivery-pipeline" block + skill; v2 renamed the flow to
-# "workbench". Remove the old artifacts so they don't shadow the new ones.
-legacy_begin="<!-- workbench:delivery-pipeline:begin -->"
-legacy_end="<!-- workbench:delivery-pipeline:end -->"
-if grep -qF "$legacy_begin" "$CLAUDE_MD"; then
-  if grep -qF "$legacy_end" "$CLAUDE_MD"; then
-    awk -v b="$legacy_begin" -v e="$legacy_end" '
-      index($0,b){skip=1}
-      !skip{print}
-      index($0,e){skip=0}
-    ' "$CLAUDE_MD" > "${CLAUDE_MD}.tmp"
-    mv "${CLAUDE_MD}.tmp" "$CLAUDE_MD"
-    note "removed legacy block: delivery-pipeline"
-  else
-    note "WARNING: legacy delivery-pipeline block has no end marker — remove it by hand."
+# v1.x: "delivery-pipeline" block + skill. v2.0: "workbench" blocks + skills
+# + commands copied into ~/.claude. v2.1 renamed the flow to "psyflow" and
+# moved commands/skills into the psyflow PLUGIN — remove every older copy so
+# it doesn't shadow or duplicate the plugin-installed versions.
+say "Cleaning up legacy installs"
+remove_block "<!-- workbench:delivery-pipeline:begin -->" \
+             "<!-- workbench:delivery-pipeline:end -->" "delivery-pipeline" || true
+for id in pipeline code-review-graph conventions; do
+  remove_block "<!-- workbench:${id}:begin -->" \
+               "<!-- workbench:${id}:end -->" "workbench:${id}" || true
+done
+for skill in delivery-pipeline workbench to-architecture; do
+  if [ -d "$SKILLS_DIR/$skill" ]; then
+    rm -rf "$SKILLS_DIR/$skill"
+    note "removed legacy personal skill: $skill (now plugin-shipped)"
   fi
-fi
-if [ -d "$SKILLS_DIR/delivery-pipeline" ]; then
-  rm -rf "$SKILLS_DIR/delivery-pipeline"
-  note "removed legacy skill: delivery-pipeline"
-fi
+done
+for cmd_file in "$REPO_DIR"/commands/*.md; do
+  name="$(basename "$cmd_file")"
+  if [ -f "$COMMANDS_DIR/$name" ]; then
+    rm -f "$COMMANDS_DIR/$name"
+    note "removed legacy personal command: /${name%.md} (now plugin-shipped)"
+  fi
+done
 
 # ------------------------------------------------- 1. CLAUDE.md blocks
 # Each file in claude-md-blocks/ is wrapped in
-#   <!-- workbench:<id>:begin --> ... <!-- workbench:<id>:end -->
+#   <!-- psyflow:<id>:begin --> ... <!-- psyflow:<id>:end -->
 # Re-running removes the old block (by marker) and appends the new one.
 say "Installing CLAUDE.md blocks"
 for block in "$BLOCKS_DIR"/*.md; do
-  id="$(head -1 "$block" | sed -n 's/.*workbench:\(.*\):begin.*/\1/p')"
+  id="$(head -1 "$block" | sed -n 's/.*psyflow:\(.*\):begin.*/\1/p')"
   if [ -z "$id" ]; then
-    note "SKIP $(basename "$block"): no workbench marker on first line"
+    note "SKIP $(basename "$block"): no psyflow marker on first line"
     continue
   fi
-  begin="<!-- workbench:${id}:begin -->"
-  end="<!-- workbench:${id}:end -->"
+  begin="<!-- psyflow:${id}:begin -->"
+  end="<!-- psyflow:${id}:end -->"
   if grep -qF "$begin" "$CLAUDE_MD"; then
-    # Safety: only remove when BOTH markers are present. With the end marker
-    # missing (e.g. lost in a hand edit), the awk below would delete from the
-    # begin marker to end-of-file, taking user content with it.
-    if ! grep -qF "$end" "$CLAUDE_MD"; then
-      note "WARNING $id: begin marker found but end marker missing in CLAUDE.md."
-      note "        Skipping this block to avoid deleting user content."
-      note "        Restore the '<!-- workbench:${id}:end -->' line (or remove"
-      note "        the whole block by hand), then re-run."
-      continue
-    fi
-    # Remove existing block (inclusive of markers).
-    awk -v b="$begin" -v e="$end" '
-      index($0,b){skip=1}
-      !skip{print}
-      index($0,e){skip=0}
-    ' "$CLAUDE_MD" > "${CLAUDE_MD}.tmp"
-    mv "${CLAUDE_MD}.tmp" "$CLAUDE_MD"
-    note "replaced block: $id"
+    remove_block "$begin" "$end" "$id" || continue
+    note "replacing block: $id"
   else
-    note "added block: $id"
+    note "adding block: $id"
   fi
   printf '\n' >> "$CLAUDE_MD"
   cat "$block" >> "$CLAUDE_MD"
 done
 
-# ------------------------------------------------- 2. personal skills
-say "Installing personal skills"
-# The CLAUDE.md block is a thin pointer that tells the agent to load the
-# workbench skill for the full stage rules — all skills install as personal
-# skills so the pointer always resolves. No plugin/marketplace packaging:
-# this script IS the distribution channel for this repo.
-for skill_dir in "$REPO_DIR"/skills/*/; do
-  name="$(basename "$skill_dir")"
-  mkdir -p "$SKILLS_DIR/$name"
-  cp "$skill_dir/SKILL.md" "$SKILLS_DIR/$name/SKILL.md"
-  note "installed skill: $name -> $SKILLS_DIR/$name"
-done
-
-# ------------------------------------------------- 2b. slash commands
-say "Installing slash commands"
-# The eight stage commands (/setup /discover /design /spec /tickets /build
-# /accept /release) are Claude Code custom commands — each carries its own
-# stage rules and loads the workbench skill for the cross-stage rules.
-mkdir -p "$COMMANDS_DIR"
-for cmd_file in "$REPO_DIR"/commands/*.md; do
-  cp "$cmd_file" "$COMMANDS_DIR/$(basename "$cmd_file")"
-  note "installed command: /$(basename "$cmd_file" .md)"
-done
-
-# ------------------------------------------------- 3. CLI tools
+# ------------------------------------------------- 2. CLI tools
 say "Installing CLI tools"
 # code-review-graph is a Python (PyPI) package — there is no npm package of
 # this name. Install as an isolated tool via uv (preferred) or pipx.
@@ -166,21 +147,28 @@ else
   note "Install uv (https://docs.astral.sh/uv/), then re-run this script."
 fi
 
-# ------------------------------------------------- 4. print the in-app steps
+# ------------------------------------------------- 3. print the in-app steps
 say "Done with the filesystem layer. Finish inside Claude Code:"
 cat <<'EOF'
 
-  Paste these commands in any Claude Code session (third-party plugins —
-  their marketplace is their update channel):
+  Paste these commands in any Claude Code session:
+
+    /plugin marketplace add miki519/psyflow
+    /plugin install psyflow@psyflow
+
+  Stage commands install namespaced: /psyflow:setup, /psyflow:discover, ...
+  Updating later: /plugin marketplace update psyflow
+
+  Third-party plugins (their marketplace is their update channel):
 
     /plugin marketplace add mattpocock/skills
 
   (Also install the Karpathy guidelines and any other marketplaces you use —
    see README.md for the full stack and versions verified.)
 
-  Per-project setup: just run /setup inside each new project — it installs
-  the per-project tools (design kit for UI projects, optional style-search
-  engine, code-review-graph) with its own checks.
+  Per-project setup: just run /psyflow:setup inside each new project — it
+  installs the per-project tools (design kit for UI projects, optional
+  style-search engine, code-review-graph) with its own checks.
 
 EOF
 say "Re-running this script is safe: blocks are replaced in place."

@@ -1,8 +1,8 @@
 ---
-description: "Workbench stage 7 — staged rollout: staging, confirm, production"
+description: "Psyflow stage 7 — staged rollout: staging, confirm, production"
 ---
 
-Load the `workbench` skill with the Skill tool for the cross-stage rules,
+Load the `psyflow` skill with the Skill tool for the cross-stage rules,
 then execute stage 7 (/release — staged rollout) by the stage rules below.
 Precondition: /accept has passed for this round of work — if it has not,
 stop and require it before deploying anything.
