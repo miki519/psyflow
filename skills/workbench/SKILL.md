@@ -67,6 +67,15 @@ artifacts instead of memory or chat history:
   (full 8-state spec, call sites converge). No speculative components.
 - **Four layers of design documentation**: tokens → component specs →
   foundations → flows. The first two alone are not a design system.
+- **Human-only steps become wizards**: whenever progress blocks on steps
+  only the human can perform — provisioning credentials, third-party
+  dashboards, CI secrets, one-off migrations with manual confirmation —
+  invoke **wizard** to generate a guided script instead of dictating the
+  steps in chat; never for steps the agent can run itself. Secrets travel
+  through the wizard's hidden input into `.env`/CI, never through the
+  conversation. Repeatable paths (a new environment or teammate will run
+  it again) → commit under `scripts/` and link from the README; one-off
+  cutovers → scratch, delete after running.
 - **CLAUDE.md is an index, not a manual**: the project's CLAUDE.md holds
   only pointers (where the tokens live, which skills to load, where specs
   are) — never rule bodies, design manuals, or checklists. Anything

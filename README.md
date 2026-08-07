@@ -173,7 +173,7 @@ claude
 
 | 元件 | 驗證版本 | 日期 |
 |---|---|---|
-| mattpocock-skills | 1.2.0 | 2026-07 |
+| mattpocock-skills | 1.2.3 | 2026-08 |
 | andrej-karpathy-skills | 1.0.0 | 2026-07 |
 | ux-ui-agent-skills | 2.4.0 | 2026-07 |
 | uipro-cli（ui-ux-pro-max，選配） | 2.2.3 | 2026-08 |
@@ -449,6 +449,8 @@ skill 當**引擎**（怎麼問、怎麼驗、怎麼審都歸引擎的 skill 管
 | `/research` | 對高信任來源做調查並落檔（事件驅動） |
 | `/diagnosing-bugs` | 困難 bug 的診斷循環（事件驅動） |
 | `/resolving-merge-conflicts` | 處理 merge/rebase 衝突（事件驅動） |
+| `/wizard` | 遇到只有人能做的步驟（憑證、CI secrets、dashboard 操作）時，生成互動式精靈腳本帶人完成，秘密值不經過對話（事件驅動，任何 stage 都可能觸發） |
+| `/to-questionnaire` | 答案在第三方（客戶、領域專家）手上的 open question，轉成問卷文件落在 `docs/research/`，/discover 掛載（僅手動） |
 
 #### 本 repo（install.sh 裝進個人 skills 與 commands）
 
