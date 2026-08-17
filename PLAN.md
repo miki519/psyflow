@@ -97,6 +97,24 @@
 - [x] pilotfish 公開安裝源已查得並寫入 SETUP.md §3（2026-08-01，
       `Nanako0129/pilotfish` pin v1.3.5；Karpathy marketplace 指令同批補上）
 - [x] 初始 commit 已完成（v1.0.0 起歷經 v2.0.0，見 git log）
+- [x] **輪次規模分級 S/M/L**（2026-08-18 提案並核准、同日完成，改 discover／spec／accept／release 四個 command 檔；
+      三步都只加規則、不刪既有閘門，L 級流程完全不變）：
+      ① `commands/discover.md` 路由宣告加一格「本輪規模」：S = 單模組、
+        不碰 schema／API 契約／security／migration／不可逆操作、diff
+        預期少量檔案；命中任一風險觸發一律 ≥ M（與 pilotfish「risk
+        triggers override size」對齊）。標記寫進 spec 頁首供後段讀取。
+      ② `commands/accept.md` 加 S 模式：Standards＋Spec 合為一位 reviewer
+        只讀 diff、只重跑受影響測試、場境 grep 照做、UI 三件套僅在碰 UI
+        時跑、獨立 verifier 明講跳過（＝把 hotfix 的「這個修好、沒弄壞
+        別的」正式化）。M／L 維持現行。
+      ③ `commands/release.md` 把部署與功能輪次解耦：S 輪 accept 通過後
+        可「排入 release batch」不部署；`/release` 一次帶多輪上線，
+        staging → confirm → production 只跑一次；S 且不動部署層（無
+        migration／env／config）的輪次，staging smoke 縮到一條核心路徑。
+      pilotfish 那層不動：release 仍是 risk trigger，所以每次真正部署
+      仍有一次 verifier＋明確核准——批次上線是在不改安全規則下攤薄它。
+      背景：目前只有 /discover→/design、/spec to-architecture、/build
+      驗證分層有規模開關；/accept、/release 全部無條件。
 - [ ] 在乾淨機器（或新使用者帳號）實測一次完整安裝流程
 - [ ] install.sh 實測：跑兩次驗證冪等（區塊替換、備份產生）
 - [ ] 推上 GitHub 後：用另一台機器走一次「方法一（讓 Claude 裝）」

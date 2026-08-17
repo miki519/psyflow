@@ -1,5 +1,5 @@
 <!-- psyflow:pipeline:begin -->
-<!-- psyflow v2.0.0 -->
+<!-- psyflow v2.1.0 -->
 <!-- Thin pointer by design: cross-stage rules live in the psyflow skill,
      each stage's own rules in its slash command (single source of truth —
      content lives in exactly one place).

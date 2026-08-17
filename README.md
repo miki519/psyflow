@@ -179,7 +179,7 @@ claude
 | ux-ui-agent-skills | 2.4.0 | 2026-07 |
 | uipro-cli（ui-ux-pro-max，選配） | 2.2.3 | 2026-08 |
 | pilotfish | 1.3.5 | 2026-07 |
-| psyflow（本 repo，plugin） | 2.0.0 | 2026-08 |
+| psyflow（本 repo，plugin） | 2.1.0 | 2026-08 |
 
 ### 更新這套環境
 

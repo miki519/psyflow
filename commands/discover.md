@@ -30,6 +30,12 @@ by the stage rules below, including the routing announcement at the end.
   never do. No scenario IDs here — examples may still die or merge.
   Routing duty at the end, announced in one line:
   UI touched → "next: /design"; logic-only → "skip /design → next: /spec".
+  The same line declares the round's **size tier — S / M / L**: S = one
+  module, no schema / migration / API-contract / security / irreversible
+  operation, few files expected; any of those risk triggers forces ≥ M
+  regardless of size (risk overrides size, as in the orchestration layer).
+  /spec copies the tier onto the spec's first line; later stages read it
+  from there and never re-guess it. Tier changes mid-flow are announced.
 - Observations filed in `docs/research/` by earlier /release rounds are
   standing evidence here — this is how the flow closes into a loop.
 

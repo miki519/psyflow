@@ -10,7 +10,9 @@ freezing anything.
 ## Stage rules
 
 - Re-present the consolidated result of /discover + /design for one final
-  confirmation, THEN freeze it as the spec.
+  confirmation, THEN freeze it as the spec. The spec's first line carries
+  the round's size tier (S / M / L) declared by /discover — /accept and
+  /release read it from here.
 - **This is the only stage that writes the design system**: **design-tokens**
   turns approved candidate values into tokens; **design-component** writes
   8-state component specs. Modifying an EXISTING token/component goes through

@@ -8,6 +8,16 @@ stage never deploys anything.
 
 ## Stage rules
 
+- Read the round's size tier from the spec header first. **S rounds run
+  the S mode**: one reviewer covers Standards + Spec together, reading
+  only the diff and its review-changes reference chains; re-run only the
+  tests the diff touches (citing /build's green runs for the rest); the
+  scenario-coverage grep still runs in full (it is cheap); design
+  acceptance only when UI is touched; the closing independent
+  verification is skipped and the report says so — S is the hotfix rule
+  ("this change verified, nothing else broken") made regular. If the diff
+  turns out to cross a risk trigger, promote to M on the spot and
+  announce it. M / L rounds follow every rule below.
 - FIRST action, before dispatching any reviewer: gather the round's
   deferred-decision list (choices /build parked for acceptance, known
   ticketed defects, recorded trade-offs) and hand it to the Standards and
