@@ -33,9 +33,10 @@ AI 負責跑流程和產出，你只負責回答問題和拍板。
 5. [安裝 Node.js](#五安裝-nodejs)
 6. [安裝 uv](#六安裝-uv)
 7. [安裝 Docker](#七安裝-docker)
-8. [安裝本 repo](#八安裝本-repo)
-9. [開始新專案](#九開始新專案)
-10. [工作流教學](#十工作流教學)
+8. [安裝 Orca](#八安裝-orca)
+9. [安裝本 repo](#九安裝本-repo)
+10. [開始新專案](#十開始新專案)
+11. [工作流教學](#十一工作流教學)
 
 ---
 
@@ -142,13 +143,47 @@ irm https://astral.sh/uv/install.ps1 | iex
 | Windows | [Docker Desktop for Windows](https://docs.docker.com/desktop/setup/install/windows-install/) |
 | Linux | [Docker Engine](https://docs.docker.com/engine/install/)（記得把使用者加入 `docker` 群組） |
 
-## 八、安裝本 repo
+## 八、安裝 Orca
+
+[Orca](https://github.com/stablyai/orca)（MIT）是跑 coding agent 的桌面
+駕駛艙：多個 agent 各自在獨立 git worktree 並行工作、集中追蹤，內建
+終端機、瀏覽器與手機 companion。本工作流把它當預設工作環境——之後
+每一節的終端機操作都直接在 Orca 裡做。
+
+### 1. 安裝桌面 app
+
+到 <https://onorca.dev/download> 下載安裝（macOS／Windows／Linux 都有）。
+app 會自動更新，不用手動追版本。
+
+### 2. 裝正體中文語言包
+
+Orca 介面預設英文，裝
+[orca-traditional-chinese](https://github.com/a-lang/orca-traditional-chinese)
+語言包（台灣用語、人工審校，覆蓋率 99.98%）：
+
+1. Settings → Plugins → **Add marketplace source**，貼上
+   Git URL `https://github.com/a-lang/orca-traditional-chinese.git`
+   （ref 填 `main`）
+2. marketplace 清單出現 **Traditional Chinese Language Pack**，按安裝
+3. Settings → Appearance → Language 選「**繁體中文（台灣）**」
+
+### 驗證
+
+開一個 Orca 終端機執行：
+
+```bash
+orca status
+```
+
+有正常輸出（不是 command not found）、且介面已是繁中，即完成。
+
+## 九、安裝本 repo
 
 前面備齊後，裝這套工作環境本體。
 
 ### 1. 首次啟動與登入
 
-打開終端機（Windows 用 PowerShell），執行：
+打開終端機（Windows 用 PowerShell，建議直接用 Orca 的終端機），執行：
 
 ```bash
 claude
@@ -176,7 +211,7 @@ claude
 |---|---|---|
 | mattpocock-skills | 1.2.3 | 2026-08 |
 | andrej-karpathy-skills | 1.0.0 | 2026-07 |
-| ux-ui-agent-skills | 2.4.0 | 2026-07 |
+| ux-ui-agent-skills | 2.5.1 | 2026-08 |
 | uipro-cli（ui-ux-pro-max，選配） | 2.2.3 | 2026-08 |
 | pilotfish | 1.3.5 | 2026-07 |
 | psyflow（本 repo，plugin） | 2.1.0 | 2026-08 |
@@ -191,7 +226,7 @@ claude
 AI 會拉最新版、重跑安裝、引導你完成 plugin 更新；動到你自訂的內容前
 會先警告，完成後回報更新了什麼。
 
-## 九、開始新專案
+## 十、開始新專案
 
 之後每次要開新專案，三步：
 
@@ -220,7 +255,7 @@ AI 會安裝設計知識庫（UI 專案；選裝風格檢索引擎）與程式�
 而不是跳過，完成後回報結果。
 裝完就可以直接開工（見下一節）。
 
-## 十、工作流教學
+## 十一、工作流教學
 
 ### 第一部分：基礎用法
 
@@ -231,7 +266,7 @@ AI 會安裝設計知識庫（UI 專案；選裝風格檢索引擎）與程式�
 /setup → /discover → /design* → /spec → /tickets → /build → /accept → /release
 ```
 
-- `/setup` 一個專案只做一次（第九節做過就不用再做）；之後每一輪功能
+- `/setup` 一個專案只做一次（第十節做過就不用再做）；之後每一輪功能
   都從 `/discover` 開始。
 - `*`＝條件 stage：不動畫面時 AI 會在 `/discover` 結尾明講「跳過
   /design」，你直接打 `/spec` 即可。

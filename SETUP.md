@@ -54,7 +54,7 @@ verify:
 /plugin marketplace add miki519/psyflow
 /plugin install psyflow@psyflow
 /plugin marketplace add mattpocock/skills
-/plugin marketplace add forrestchang/andrej-karpathy-skills
+/plugin marketplace add multica-ai/andrej-karpathy-skills
 ```
 
 Verify: ask the user to open `/plugin` and check the installed list, or test
