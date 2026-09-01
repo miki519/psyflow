@@ -247,7 +247,7 @@ claude
 打工作流的第 0 個 stage：
 
 ```
-/setup
+/psyflow:setup
 ```
 
 AI 會安裝設計知識庫（UI 專案；選裝風格檢索引擎）與程式碼知識圖，
@@ -263,130 +263,130 @@ AI 會安裝設計知識庫（UI 專案；選裝風格檢索引擎）與程式�
 不用背，AI 每做完一個 stage 會告訴你下一個是什麼；跟著四個情境操作一遍就會了。
 
 ```
-/setup → /discover → /design* → /spec → /tickets → /build → /accept → /release
+/psyflow:setup → /psyflow:discover → /psyflow:design* → /psyflow:spec → /psyflow:tickets → /psyflow:build → /psyflow:accept → /psyflow:release
 ```
 
-- `/setup` 一個專案只做一次（第十節做過就不用再做）；之後每一輪功能
-  都從 `/discover` 開始。
-- `*`＝條件 stage：不動畫面時 AI 會在 `/discover` 結尾明講「跳過
-  /design」，你直接打 `/spec` 即可。
-- `/accept` 只驗收不部署；`/release` 一定要驗收通過才能跑。
+- `/psyflow:setup` 一個專案只做一次（第十節做過就不用再做）；之後每一輪功能
+  都從 `/psyflow:discover` 開始。
+- `*`＝條件 stage：不動畫面時 AI 會在 `/psyflow:discover` 結尾明講「跳過
+  /psyflow:design」，你直接打 `/psyflow:spec` 即可。
+- `/psyflow:accept` 只驗收不部署；`/psyflow:release` 一定要驗收通過才能跑。
 
 這條流程存在的理由：讓 UI/UX、前端、後端透過**契約工件**協作,
 而不是靠記憶或聊天紀錄——
 
 ```
   UX / design                      frontend            backend
-  /design (look & feel)  ─┐
+  /psyflow:design (look & feel)  ─┐
   scenario section (GWT) ─┤
-                          ├─ /spec ──→ tokens + component specs
+                          ├─ /psyflow:spec ──→ tokens + component specs
                           │              │ consumed by frontend
-                          └─ /spec (to-architecture) ──→ API contract
+                          └─ /psyflow:spec (to-architecture) ──→ API contract
                                          │ coded against by BOTH
-  /build:  frontend and backend build IN PARALLEL against the contracts
-  /accept: contract drift fails acceptance on either side
+  /psyflow:build:  frontend and backend build IN PARALLEL against the contracts
+  /psyflow:accept: contract drift fails acceptance on either side
 ```
 
 #### 情境一：「我想做一個官網」（大型、從零開始）
 
-**流程：`/setup` → `/discover` → `/design` → `/spec` → `/tickets` → `/build` → `/accept` → `/release`（全程）**
+**流程：`/psyflow:setup` → `/psyflow:discover` → `/psyflow:design` → `/psyflow:spec` → `/psyflow:tickets` → `/psyflow:build` → `/psyflow:accept` → `/psyflow:release`（全程）**
 
 | 步驟 | 你打的指令 | 目的／會發生什麼 |
 |---|---|---|
-| 1 | `/setup` | 初始化專案工具（設計知識庫＋程式碼知識圖）。一個專案只做一次 |
-| 2 | `/discover 我想做一個公司官網` | AI 逐題訪談（受眾？頁面清單？品牌色？），每題附推薦答案，你逐項拍板。新領域它會先建**詞彙表**，讓之後的文案與程式碼用同一套名詞。結尾宣告：「這案子動畫面，下一步 /design」 |
-| 3 | `/design` | 把首頁做成**可互動的 HTML** 給你玩。目的：「看得到之前，訪談問不出真需求」——「顏色太濃」「改大圓角」這種回饋就在這個 stage 發生；對比度等數字一律實測。改到你滿意為止 |
-| 4 | `/spec` | 把前兩步的拍板彙整重述一次，你**再確認**後才凍成規格＋design tokens（色彩、字體、間距的唯一真相源）。跨邊界的架構決策（部署方式、表單送到哪、要不要 CMS）也在這一步落成 ADR |
-| 5 | `/tickets` | 把規格切成一張張可獨立完成的票（首頁、關於頁、聯絡表單…） |
-| 6 | `/build` | 逐票實作。UI 只准引用第 4 步的 tokens，不准另外發明顏色 |
-| 7 | `/accept` | 驗收：程式碼雙軸審查＋因為有 UI 加跑對比度等實測 gates＋獨立驗證。**只驗收、不部署** |
-| 8 | `/release` | 先部署**測試環境**（staging）→ 你在測試環境確認 → 再上**正式環境**（production） |
+| 1 | `/psyflow:setup` | 初始化專案工具（設計知識庫＋程式碼知識圖）。一個專案只做一次 |
+| 2 | `/psyflow:discover 我想做一個公司官網` | AI 逐題訪談（受眾？頁面清單？品牌色？），每題附推薦答案，你逐項拍板。新領域它會先建**詞彙表**，讓之後的文案與程式碼用同一套名詞。結尾宣告：「這案子動畫面，下一步 /psyflow:design」 |
+| 3 | `/psyflow:design` | 把首頁做成**可互動的 HTML** 給你玩。目的：「看得到之前，訪談問不出真需求」——「顏色太濃」「改大圓角」這種回饋就在這個 stage 發生；對比度等數字一律實測。改到你滿意為止 |
+| 4 | `/psyflow:spec` | 把前兩步的拍板彙整重述一次，你**再確認**後才凍成規格＋design tokens（色彩、字體、間距的唯一真相源）。跨邊界的架構決策（部署方式、表單送到哪、要不要 CMS）也在這一步落成 ADR |
+| 5 | `/psyflow:tickets` | 把規格切成一張張可獨立完成的票（首頁、關於頁、聯絡表單…） |
+| 6 | `/psyflow:build` | 逐票實作。UI 只准引用第 4 步的 tokens，不准另外發明顏色 |
+| 7 | `/psyflow:accept` | 驗收：程式碼雙軸審查＋因為有 UI 加跑對比度等實測 gates＋獨立驗證。**只驗收、不部署** |
+| 8 | `/psyflow:release` | 先部署**測試環境**（staging）→ 你在測試環境確認 → 再上**正式環境**（production） |
 
 #### 情境二：「我想做一個 CRM」（大型、多模組）
 
-**流程：全程八個 stage，一個模組一輪，做完回 `/discover` 滾下一輪**
+**流程：全程八個 stage，一個模組一輪，做完回 `/psyflow:discover` 滾下一輪**
 
 | 步驟 | 你打的指令 | 目的／會發生什麼 |
 |---|---|---|
-| 1 | `/setup` | 初始化專案工具，一次 |
-| 2 | `/discover 我想做一個業務用的 CRM` | 訪談先框範圍：有哪些模組（客戶、商機、報表）？誰在用？先做哪一塊？CRM 名詞最容易混亂（「客戶」是公司還是聯絡人？），訪談中會先把**詞彙表**定死，欄位命名、畫面文案、API 全部同源 |
-| 3 | `/design` | 挑最核心的一兩個畫面（如商機看板）做互動原型，定調視覺與操作感 |
-| 4 | `/spec` | 第一期範圍凍成規格：每個流程含成功／失敗／恢復三條路徑。大專案的重頭戲在這：資料模型、模組邊界、API 契約全部落成 ADR＋機器可驗的 schema——半年後問「當初為什麼這樣切」，答案在 `docs/decisions/` |
-| 5 | `/tickets` | 切票，且票不得橫跨剛畫下的模組邊界；票一多（五張以上）會先做一次獨立的計畫審視再開工 |
-| 6 | `/build` | 逐票實作，邏輯測試先行 |
-| 7 | `/accept` → `/release` | 驗收通過後，staging → 確認 → production，上線第一期 |
-| 8 | 回到 `/discover 第二期做報表模組` | 大專案就是這樣一輪一輪滾：一個模組一輪，上一輪的觀測是下一輪的證據 |
+| 1 | `/psyflow:setup` | 初始化專案工具，一次 |
+| 2 | `/psyflow:discover 我想做一個業務用的 CRM` | 訪談先框範圍：有哪些模組（客戶、商機、報表）？誰在用？先做哪一塊？CRM 名詞最容易混亂（「客戶」是公司還是聯絡人？），訪談中會先把**詞彙表**定死，欄位命名、畫面文案、API 全部同源 |
+| 3 | `/psyflow:design` | 挑最核心的一兩個畫面（如商機看板）做互動原型，定調視覺與操作感 |
+| 4 | `/psyflow:spec` | 第一期範圍凍成規格：每個流程含成功／失敗／恢復三條路徑。大專案的重頭戲在這：資料模型、模組邊界、API 契約全部落成 ADR＋機器可驗的 schema——半年後問「當初為什麼這樣切」，答案在 `docs/decisions/` |
+| 5 | `/psyflow:tickets` | 切票，且票不得橫跨剛畫下的模組邊界；票一多（五張以上）會先做一次獨立的計畫審視再開工 |
+| 6 | `/psyflow:build` | 逐票實作，邏輯測試先行 |
+| 7 | `/psyflow:accept` → `/psyflow:release` | 驗收通過後，staging → 確認 → production，上線第一期 |
+| 8 | 回到 `/psyflow:discover 第二期做報表模組` | 大專案就是這樣一輪一輪滾：一個模組一輪，上一輪的觀測是下一輪的證據 |
 
 #### 情境三：小改動、會動到畫面
 
-**流程：`/discover` → `/design` → `/spec` → `/tickets` → `/build` → `/accept` → `/release`（/setup 做過就不用）**
+**流程：`/psyflow:discover` → `/psyflow:design` → `/psyflow:spec` → `/psyflow:tickets` → `/psyflow:build` → `/psyflow:accept` → `/psyflow:release`（/psyflow:setup 做過就不用）**
 
 | 步驟 | 你打的指令 | 目的／會發生什麼 |
 |---|---|---|
-| 1 | `/discover 訂單列表加一個匯出按鈕` | 訪談只剩兩三題：放哪裡？匯什麼格式？一分鐘拍板完。結尾宣告：「動到畫面，下一步 /design」 |
-| 2 | `/design` | 按鈕位置、hover 效果做成 HTML 給你看過才定案 |
-| 3 | `/spec` | 小票的規格也小：按鈕的狀態表（平常／滑過／按下／處理中）＋無障礙條件，幾行而已。AI 判斷不跨模組邊界，架構決策明講跳過 |
-| 4 | `/tickets` → `/build` | 一張票，直接做 |
-| 5 | `/accept` | 因為動了 UI，除了程式碼審查，加跑設計驗收：對比度實測、每個狀態檢查 |
-| 6 | `/release` | staging → 確認 → production |
+| 1 | `/psyflow:discover 訂單列表加一個匯出按鈕` | 訪談只剩兩三題：放哪裡？匯什麼格式？一分鐘拍板完。結尾宣告：「動到畫面，下一步 /psyflow:design」 |
+| 2 | `/psyflow:design` | 按鈕位置、hover 效果做成 HTML 給你看過才定案 |
+| 3 | `/psyflow:spec` | 小票的規格也小：按鈕的狀態表（平常／滑過／按下／處理中）＋無障礙條件，幾行而已。AI 判斷不跨模組邊界，架構決策明講跳過 |
+| 4 | `/psyflow:tickets` → `/psyflow:build` | 一張票，直接做 |
+| 5 | `/psyflow:accept` | 因為動了 UI，除了程式碼審查，加跑設計驗收：對比度實測、每個狀態檢查 |
+| 6 | `/psyflow:release` | staging → 確認 → production |
 
 #### 情境四：小改動、不動畫面
 
-**流程：`/discover` → `/spec` → `/tickets` → `/build` → `/accept` → `/release`（明講跳過 /design）**
+**流程：`/psyflow:discover` → `/psyflow:spec` → `/psyflow:tickets` → `/psyflow:build` → `/psyflow:accept` → `/psyflow:release`（明講跳過 /psyflow:design）**
 
 | 步驟 | 你打的指令 | 目的／會發生什麼 |
 |---|---|---|
-| 1 | `/discover 匯出改成背景處理完寄 email` | 訪談重點在行為：多久算逾時？失敗要通知誰？結尾宣告：「**此票無畫面，跳過 /design**，下一步 /spec」 |
-| 2 | `/spec` | 規格寫清楚三條路徑：成功（信寄到）／失敗（寄不出去）／**恢復**（怎麼自動重試、使用者怎麼手動重寄）。這票**有**架構決策（背景任務用什麼佇列？），出 ADR |
-| 3 | `/tickets` → `/build` | 切票實作，測試先行（tdd） |
-| 4 | `/accept` | 只跑程式碼軸，設計項明講略過 |
-| 5 | `/release` | staging → 確認 → production |
+| 1 | `/psyflow:discover 匯出改成背景處理完寄 email` | 訪談重點在行為：多久算逾時？失敗要通知誰？結尾宣告：「**此票無畫面，跳過 /psyflow:design**，下一步 /psyflow:spec」 |
+| 2 | `/psyflow:spec` | 規格寫清楚三條路徑：成功（信寄到）／失敗（寄不出去）／**恢復**（怎麼自動重試、使用者怎麼手動重寄）。這票**有**架構決策（背景任務用什麼佇列？），出 ADR |
+| 3 | `/psyflow:tickets` → `/psyflow:build` | 切票實作，測試先行（tdd） |
+| 4 | `/psyflow:accept` | 只跑程式碼軸，設計項明講略過 |
+| 5 | `/psyflow:release` | staging → 確認 → production |
 
 #### 情境五：把既有專案接上這套流程
 
-**流程：`/setup` → `/discover`（之後照常）**
+**流程：`/psyflow:setup` → `/psyflow:discover`（之後照常）**
 
 | 步驟 | 你打的指令 | 目的／會發生什麼 |
 |---|---|---|
-| 1 | 在專案根目錄 `claude` → `/setup` | 既有專案一樣只做一次：建程式碼知識圖（`code-review-graph build`），UI 專案加裝設計知識庫。之後 AI 讀碼走圖、只讀相關檔案 |
-| 2 | `/discover 我想幫這個系統加會員等級` | 訪談會先用知識圖**摸清現況**（現在的會員模型長怎樣？哪些畫面會受影響？），問題釘在真實程式碼上，不是憑空發散 |
-| 3 | 之後照常 | /design*（動畫面才有）→ /spec（改既有 token／元件要走 governance 影響分析）→ 照常往下 |
+| 1 | 在專案根目錄 `claude` → `/psyflow:setup` | 既有專案一樣只做一次：建程式碼知識圖（`code-review-graph build`），UI 專案加裝設計知識庫。之後 AI 讀碼走圖、只讀相關檔案 |
+| 2 | `/psyflow:discover 我想幫這個系統加會員等級` | 訪談會先用知識圖**摸清現況**（現在的會員模型長怎樣？哪些畫面會受影響？），問題釘在真實程式碼上，不是憑空發散 |
+| 3 | 之後照常 | /psyflow:design*（動畫面才有）→ /psyflow:spec（改既有 token／元件要走 governance 影響分析）→ 照常往下 |
 
 #### 情境六：線上出包，緊急修復（逃生門）
 
-**流程：`/diagnosing-bugs` → 修好 → `/accept` → `/release`（明講跳過 /discover ～ /tickets）**
+**流程：`/mattpocock-skills:diagnosing-bugs` → 修好 → `/psyflow:accept` → `/psyflow:release`（明講跳過 /psyflow:discover ～ /psyflow:tickets）**
 
 | 步驟 | 你打的指令 | 目的／會發生什麼 |
 |---|---|---|
-| 1 | `/diagnosing-bugs 結帳按鈕全部沒反應` | 事件驅動引擎直接進診斷循環：重現 → 定位根因 → 最小修復。**不走** /discover～/tickets——bug 不是新需求，沒東西好訪談 |
-| 2 | `/accept` | 縮小版驗收：只驗「這個修復」——bug 不再重現＋沒改壞別的。仍然不准跳過：改壞別的東西上線更慘 |
-| 3 | `/release` | 照常兩段式：staging 確認 → production。**再急也走 staging**，這正是最不能盲上的時刻 |
-| 4 | 事後（可選） | 根因若暴露了設計缺陷（例如缺監控、錯誤處理缺路徑），開 `/discover` 補一輪正式的——逃生門解決火災，不解決火源 |
+| 1 | `/mattpocock-skills:diagnosing-bugs 結帳按鈕全部沒反應` | 事件驅動引擎直接進診斷循環：重現 → 定位根因 → 最小修復。**不走** /psyflow:discover～/psyflow:tickets——bug 不是新需求，沒東西好訪談 |
+| 2 | `/psyflow:accept` | 縮小版驗收：只驗「這個修復」——bug 不再重現＋沒改壞別的。仍然不准跳過：改壞別的東西上線更慘 |
+| 3 | `/psyflow:release` | 照常兩段式：staging 確認 → production。**再急也走 staging**，這正是最不能盲上的時刻 |
+| 4 | 事後（可選） | 根因若暴露了設計缺陷（例如缺監控、錯誤處理缺路徑），開 `/psyflow:discover` 補一輪正式的——逃生門解決火災，不解決火源 |
 
 #### 情境七：做到一半，需求要改
 
-**流程：小改回 `/spec` 重凍結；大改中止本輪、開新的 `/discover`**
+**流程：小改回 `/psyflow:spec` 重凍結；大改中止本輪、開新的 `/psyflow:discover`**
 
 | 狀況 | 你打的指令 | 目的／會發生什麼 |
 |---|---|---|
-| 小改（不跨架構邊界）：/build 做到一半想把匯出格式從 CSV 換成 Excel | `/spec 匯出格式改成 xlsx` | 回唯一有權改規格的 stage：更新凍結內容（動到既有 token／元件走 governance），受影響的票重切，沒受影響的照做。**不准**在 /build 裡口頭改——凍結的意義就是不讓「聊天中順口改的」變成規格 |
-| 大改（範圍或邊界變了）：做官網做到一半決定要加會員系統 | `/discover 官網要加會員系統` | 這不是修改、是新需求：開新一輪。上一輪已凍結的規格與 ADR 是這一輪的既有事實，訪談會在其上發問 |
+| 小改（不跨架構邊界）：/psyflow:build 做到一半想把匯出格式從 CSV 換成 Excel | `/psyflow:spec 匯出格式改成 xlsx` | 回唯一有權改規格的 stage：更新凍結內容（動到既有 token／元件走 governance），受影響的票重切，沒受影響的照做。**不准**在 /psyflow:build 裡口頭改——凍結的意義就是不讓「聊天中順口改的」變成規格 |
+| 大改（範圍或邊界變了）：做官網做到一半決定要加會員系統 | `/psyflow:discover 官網要加會員系統` | 這不是修改、是新需求：開新一輪。上一輪已凍結的規格與 ADR 是這一輪的既有事實，訪談會在其上發問 |
 
 #### 情境八：還沒決定要不要做，先調研
 
-**流程：`/research`（事件驅動）→ 有結論才進 `/discover`**
+**流程：`/mattpocock-skills:research`（事件驅動）→ 有結論才進 `/psyflow:discover`**
 
 | 步驟 | 你打的指令 | 目的／會發生什麼 |
 |---|---|---|
-| 1 | `/research 比較 LINE Pay 和綠界的金流手續費與串接難度` | 對高信任來源調查、落檔進 `docs/research/`。**還不進 pipeline**——沒有要交付的東西，就不啟動交付流程 |
-| 2 | 決定要做了 | `/discover 串綠界金流`——調研落的檔就是訪談的現成證據，不用重查 |
+| 1 | `/mattpocock-skills:research 比較 LINE Pay 和綠界的金流手續費與串接難度` | 對高信任來源調查、落檔進 `docs/research/`。**還不進 pipeline**——沒有要交付的東西，就不啟動交付流程 |
+| 2 | 決定要做了 | `/psyflow:discover 串綠界金流`——調研落的檔就是訪談的現成證據，不用重查 |
 | 2' | 決定不做 | 什麼都不用打。調研檔留著，半年後重提時證據還在 |
 
-八個情境的共同點：**做新東西永遠從 /discover 進；規格要變永遠回
-/spec；緊急修復走逃生門，但 /accept → /release 的關卡誰都不跳**。
+八個情境的共同點：**做新東西永遠從 /psyflow:discover 進；規格要變永遠回
+/psyflow:spec；緊急修復走逃生門，但 /psyflow:accept → /psyflow:release 的關卡誰都不跳**。
 指令同樣八個、同樣順序、永遠由你打下一個；差別只在每個 stage 的
 份量——大專案每個 stage 都重，小票有些 stage 被明講跳過。不確定該打
-什麼的時候，打 `/discover` 永遠不會錯——它會替你路由。
+什麼的時候，打 `/psyflow:discover` 永遠不會錯——它會替你路由。
 
 ### 第二部分：進階說明
 
@@ -422,20 +422,20 @@ Psyflow 流程是把三者接起來的那條線：它站在「產品發想者＋
 
 ```
   UX／設計                        前端              後端
-  /design（外觀手感）  ─┐
+  /psyflow:design（外觀手感）  ─┐
   flow 三段（行為）     ─┤
-                        ├─ /spec ──→ tokens＋元件規格
+                        ├─ /psyflow:spec ──→ tokens＋元件規格
                         │              │ 前端消費
-                        └─ /spec（架構決策）──→ API 契約（schema）
+                        └─ /psyflow:spec（架構決策）──→ API 契約（schema）
                                        │ 前後端都照它寫
-  /build：前端與後端對著契約「平行」開發，誰都不等誰的程式碼
-  /accept：任何一側偏離契約，驗收直接擋下
+  /psyflow:build：前端與後端對著契約「平行」開發，誰都不等誰的程式碼
+  /psyflow:accept：任何一側偏離契約，驗收直接擋下
 ```
 
 四條交接規則：
 
 - **設計 → 前端**：tokens 與元件規格就是介面。前端不准自己發明視覺值，
-  缺了退回 /spec，不准硬編碼
+  缺了退回 /psyflow:spec，不准硬編碼
 - **後端 ↔ 前端**：API 契約就是介面。前端對著 schema 做假資料先開工，
   後端照 schema 實作；要改契約＝開新的架構決策（ADR 取代），
   不准在單邊程式碼裡偷改
@@ -452,14 +452,14 @@ skill 當**引擎**（怎麼問、怎麼驗、怎麼審都歸引擎的 skill 管
 
 | Stage | 職責 | 主要引擎 | 關鍵規則 |
 |---|---|---|---|
-| **/setup** | 專案初始化（一次） | ux-ui kit、code-review-graph | 設計品質 CI（design-qa）是基礎設施，開成流程外的 infra 票 |
-| **/discover** | 需求拷問：發散→收斂、逐項拍板 | grilling；domain-modeling（新領域）；research（要證據）；explore-codebase（既有專案） | 唯一入口；丟參考圖時 AI 判斷是「功能參考」還是「畫面參考」；結尾宣告下一步（動畫面→/design；純邏輯→跳過 /design） |
-| **/design*** | 可互動 HTML 原型，把玩後定稿 | ui-ux-pro-max（選配，先檢索風格／配色候選）→ apply-aesthetic 收斂方向；prototype（Matt 命題＋kit 保真度階梯）；design-tokens 試值；條件：brandkit／redesign／ux-writing／a11y-audit | 數字一律實測（gates）；候選值還不是 token；design-review 只用在大畫面 |
-| **/spec** | 彙整前兩步→再確認→凍結 | design-tokens 固化；design-component（8 狀態規格）；to-architecture（跨邊界時，委派 codebase-design 出 ADR＋contract）；ux-writing 吃詞彙表；governance（改既有 token／元件） | **設計系統唯一寫入 stage**；flow 三段（success/failure/recovery）；埋點小節；改既有 token 必附影響分析 |
-| **/tickets** | 切票 | explore-codebase（影響面） | 票不得橫跨剛畫下的架構邊界；五張以上先做獨立計畫審視 |
-| **/build** | 逐票實作 | tdd（邏輯）；design-code（UI）；karpathy 準則常駐；token-build；refactor-safely | UI 只消費既定 tokens、缺了退回 /spec、不硬編碼；埋點跟功能一起做；共用元件附狀態 harness |
-| **/accept** | 驗收（不部署） | code-review（雙軸）；review-changes；動過 UI：gates＋design-review＋親眼渲染檢查；條件：a11y-audit／performance | 產出驗收報告；最後做一次獨立驗證；通過才准 /release |
-| **/release** | 兩段式上線 | Docker；上線前 checklist | 前置條件＝驗收通過；先 staging → 你確認 → 才 production；上線後觀測落檔 docs/research/ 回流 /discover——改善不是 stage，是路由 |
+| **/psyflow:setup** | 專案初始化（一次） | ux-ui kit、code-review-graph | 設計品質 CI（design-qa）是基礎設施，開成流程外的 infra 票 |
+| **/psyflow:discover** | 需求拷問：發散→收斂、逐項拍板 | grilling；domain-modeling（新領域）；research（要證據）；explore-codebase（既有專案） | 唯一入口；丟參考圖時 AI 判斷是「功能參考」還是「畫面參考」；結尾宣告下一步（動畫面→/psyflow:design；純邏輯→跳過 /psyflow:design） |
+| **/psyflow:design*** | 可互動 HTML 原型，把玩後定稿 | ui-ux-pro-max（選配，先檢索風格／配色候選）→ apply-aesthetic 收斂方向；prototype（Matt 命題＋kit 保真度階梯）；design-tokens 試值；條件：brandkit／redesign／ux-writing／a11y-audit | 數字一律實測（gates）；候選值還不是 token；design-review 只用在大畫面 |
+| **/psyflow:spec** | 彙整前兩步→再確認→凍結 | design-tokens 固化；design-component（8 狀態規格）；to-architecture（跨邊界時，委派 codebase-design 出 ADR＋contract）；ux-writing 吃詞彙表；governance（改既有 token／元件） | **設計系統唯一寫入 stage**；flow 三段（success/failure/recovery）；埋點小節；改既有 token 必附影響分析 |
+| **/psyflow:tickets** | 切票 | explore-codebase（影響面） | 票不得橫跨剛畫下的架構邊界；五張以上先做獨立計畫審視 |
+| **/psyflow:build** | 逐票實作 | tdd（邏輯）；design-code（UI）；karpathy 準則常駐；token-build；refactor-safely | UI 只消費既定 tokens、缺了退回 /psyflow:spec、不硬編碼；埋點跟功能一起做；共用元件附狀態 harness |
+| **/psyflow:accept** | 驗收（不部署） | code-review（雙軸）；review-changes；動過 UI：gates＋design-review＋親眼渲染檢查；條件：a11y-audit／performance | 產出驗收報告；最後做一次獨立驗證；通過才准 /psyflow:release |
+| **/psyflow:release** | 兩段式上線 | Docker；上線前 checklist | 前置條件＝驗收通過；先 staging → 你確認 → 才 production；上線後觀測落檔 docs/research/ 回流 /psyflow:discover——改善不是 stage，是路由 |
 
 #### 三條常備規則
 
@@ -477,17 +477,17 @@ skill 當**引擎**（怎麼問、怎麼驗、怎麼審都歸引擎的 skill 管
 
 | Skill | 用途 |
 |---|---|
-| `/grill-me`（grilling） | 逐題訪談拍板，/discover 的核心引擎 |
-| `/tdd` | 測試先行的紅綠燈開發，/build 掛載 |
-| `/prototype` | 拋棄式原型答設計問題，/design 的命題引擎 |
-| `/domain-modeling` | 建立專案詞彙表（統一語言），/discover 在新領域時調用 |
-| `/codebase-design` | 深模組設計：介面切分、seam 位置，在 /spec 內被 to-architecture 委派 |
-| `/code-review` | Standards＋Spec 雙軸審查，/accept 的核心引擎 |
-| `/research` | 對高信任來源做調查並落檔（事件驅動） |
-| `/diagnosing-bugs` | 困難 bug 的診斷循環（事件驅動） |
+| `/grill-me`（grilling） | 逐題訪談拍板，/psyflow:discover 的核心引擎 |
+| `/tdd` | 測試先行的紅綠燈開發，/psyflow:build 掛載 |
+| `/prototype` | 拋棄式原型答設計問題，/psyflow:design 的命題引擎 |
+| `/domain-modeling` | 建立專案詞彙表（統一語言），/psyflow:discover 在新領域時調用 |
+| `/codebase-design` | 深模組設計：介面切分、seam 位置，在 /psyflow:spec 內被 to-architecture 委派 |
+| `/code-review` | Standards＋Spec 雙軸審查，/psyflow:accept 的核心引擎 |
+| `/mattpocock-skills:research` | 對高信任來源做調查並落檔（事件驅動） |
+| `/mattpocock-skills:diagnosing-bugs` | 困難 bug 的診斷循環（事件驅動） |
 | `/resolving-merge-conflicts` | 處理 merge/rebase 衝突（事件驅動） |
 | `/wizard` | 遇到只有人能做的步驟（憑證、CI secrets、dashboard 操作）時，生成互動式精靈腳本帶人完成，秘密值不經過對話（事件驅動，任何 stage 都可能觸發） |
-| `/to-questionnaire` | 答案在第三方（客戶、領域專家）手上的 open question，轉成問卷文件落在 `docs/research/`，/discover 掛載（僅手動） |
+| `/to-questionnaire` | 答案在第三方（客戶、領域專家）手上的 open question，轉成問卷文件落在 `docs/research/`，/psyflow:discover 掛載（僅手動） |
 
 #### 本 repo（psyflow plugin）
 
@@ -495,7 +495,7 @@ skill 當**引擎**（怎麼問、怎麼驗、怎麼審都歸引擎的 skill 管
 |---|---|
 | `psyflow`（skill） | 八個 stage 的完整規則所在——CLAUDE.md 只放指標，執行任何 stage 指令時 AI 會先載入它 |
 | 八個 stage 指令 | `/psyflow:setup` `/psyflow:discover` `/psyflow:design` `/psyflow:spec` `/psyflow:tickets` `/psyflow:build` `/psyflow:accept` `/psyflow:release`——plugin 帶入的薄指令，各自載入 psyflow skill 執行對應 stage |
-| `to-architecture`（skill） | 架構決策引擎：記錄 ADR 與 contract，在 /spec 內被調用 |
+| `to-architecture`（skill） | 架構決策引擎：記錄 ADR 與 contract，在 /psyflow:spec 內被調用 |
 
 #### Karpathy 準則
 
@@ -507,31 +507,31 @@ skill 當**引擎**（怎麼問、怎麼驗、怎麼審都歸引擎的 skill 管
 
 | Skill | 用途 |
 |---|---|
-| `/design-tokens` | 生成／驗證 DTCG 三層 design tokens |
+| `/psyflow:design-tokens` | 生成／驗證 DTCG 三層 design tokens |
 | `/brandkit` | 從品牌簡報生成整套可驗證的設計基礎 |
-| `/design-component` | 元件規格書：anatomy、8 狀態、token 對照、a11y |
-| `/design-code` | 元件規格轉任意框架的程式碼 |
-| `/design-review` | 六維度設計評分＋Nielsen 十原則 |
-| `/design-qa` | 設計品質 CI gates 與視覺回歸 |
+| `/psyflow:design-component` | 元件規格書：anatomy、8 狀態、token 對照、a11y |
+| `/psyflow:design-code` | 元件規格轉任意框架的程式碼 |
+| `/psyflow:design-review` | 六維度設計評分＋Nielsen 十原則 |
+| `/psyflow:design-qa` | 設計品質 CI gates 與視覺回歸 |
 | `/a11y-audit` | WCAG 2.2 稽核＋對比度實測 |
 | `/apply-aesthetic` | 套用 138 套具名設計系統的視覺方向 |
 | `/image-to-code` | 參考截圖轉成符合 tokens 的程式碼 |
 | `/redesign` | 既有 UI 的審計式升級 |
 | `/migrate-design-system` | 與 Material 3／HIG／shadcn 等互轉 |
-| `/prototype` | 五階保真度的原型方法，/design 的保真度引擎 |
+| `/prototype` | 五階保真度的原型方法，/psyflow:design 的保真度引擎 |
 | `/ux-writing` | 介面文案：錯誤訊息、空狀態、微文案 |
 | `/token-build` | tokens 編譯成 CSS／Tailwind／iOS／Android |
 | `/figma-integration` | tokens 與 Figma Variables 同步 |
 | `/governance` | 設計系統版本治理（SemVer、晉升、棄用） |
 | `/performance` | Core Web Vitals 與動畫效能 |
-| `/gate` | 一鍵跑全部驗證 gates，回報真實 N/N，/accept 掛載 |
-| `/ship` | 上線前總關卡 checklist，/release 部署前調用 |
+| `/gate` | 一鍵跑全部驗證 gates，回報真實 N/N，/psyflow:accept 掛載 |
+| `/ship` | 上線前總關卡 checklist，/psyflow:release 部署前調用 |
 
 #### ui-ux-pro-max（風格檢索，UI 專案選配）
 
 | Skill | 用途 |
 |---|---|
-| `ui-ux-pro-max` | 可查詢的設計方向資料庫（styles／palettes／字型配對／UX 準則），/design 開頭先檢索候選再交 apply-aesthetic 收斂；`--persist` 落檔 `design-system/<slug>/MASTER.md`。無 QA gates——驗證仍歸 ux-ui kit |
+| `ui-ux-pro-max` | 可查詢的設計方向資料庫（styles／palettes／字型配對／UX 準則），/psyflow:design 開頭先檢索候選再交 apply-aesthetic 收斂；`--persist` 落檔 `design-system/<slug>/MASTER.md`。無 QA gates——驗證仍歸 ux-ui kit |
 
 #### code-review-graph（MCP tools）
 
