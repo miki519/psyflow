@@ -1,0 +1,16 @@
+{
+  "description": "psyflow ambient orchestration policy — injected at SessionStart so the main session runs the role economy (cheap models for volume, fresh contexts for verification) without manual CLAUDE.md edits.",
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|clear|compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/bin/sh \"${CLAUDE_PLUGIN_ROOT}/hooks/emit-orchestration.sh\""
+          }
+        ]
+      }
+    ]
+  }
+}

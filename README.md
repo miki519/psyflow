@@ -199,9 +199,9 @@ claude
 > 請讀取 https://github.com/miki519/psyflow 的 SETUP.md，照它配置我的環境。
 
 你的 Claude 會自己下載 repo、執行安裝、引導你完成 plugin 步驟
-（psyflow 本體、Matt Pocock skills 與 Karpathy 準則，`/plugin` 是互動指令、要你自己貼）、
-再帶你裝 pilotfish（它有自己的安裝流程：AI 讀上游 runbook、
-列出要改哪些檔、**你核准後才寫入**），最後回報驗收清單。
+（psyflow 本體、Matt Pocock skills 與 Karpathy 準則，`/plugin` 是互動指令、要你自己貼），
+最後回報驗收清單。多模型編排層（角色 agent＋政策注入）**內建在
+psyflow plugin 裡**，裝好重啟即生效，不需要額外安裝步驟。
 
 ### 驗證過的版本組合
 
@@ -213,8 +213,7 @@ claude
 | andrej-karpathy-skills | 1.0.0 | 2026-07 |
 | ux-ui-agent-skills | 2.5.1 | 2026-08 |
 | uipro-cli（ui-ux-pro-max，選配） | 2.2.3 | 2026-08 |
-| pilotfish | 1.3.5 | 2026-07 |
-| psyflow（本 repo，plugin） | 2.1.0 | 2026-08 |
+| psyflow（本 repo，plugin，含編排層） | 2.2.0 | 2026-09 |
 
 ### 更新這套環境
 
@@ -390,14 +389,14 @@ AI 會安裝設計知識庫（UI 專案；選裝風格檢索引擎）與程式�
 
 ### 第二部分：進階說明
 
-#### 環境全貌：六個元件、三層分工
+#### 環境全貌：三層分工
 
 ```
 ┌─ 全域層（裝一次，處處生效）──────────────────────────┐
-│  pilotfish          多模型編排：規劃/執行/驗證分工      │
 │  psyflow 指標塊     CLAUDE.md 薄指標＋工具慣例          │
 ├─ plugin 層（marketplace 安裝）───────────────────────┤
-│  Psyflow 流程       八個 stage 交付流（本 repo 原創）   │
+│  Psyflow 流程＋編排 八個 stage 交付流＋七隻角色 agent   │
+│                     與注入政策（規劃/執行/驗證分工）    │
 │  Matt Pocock skills TDD、除錯、code review、領域建模    │
 │  Karpathy 準則      LLM 編程缺陷矯正                    │
 ├─ 專案層（每專案安裝）────────────────────────────────┤
@@ -409,7 +408,8 @@ AI 會安裝設計知識庫（UI 專案；選裝風格檢索引擎）與程式�
 
 核心哲學：**流程與知識分離**——Matt 的 skills 是工作方法（怎麼問、
 怎麼驗證、怎麼審），ux-ui kit 是領域知識（設計怎麼做對），
-pilotfish 決定誰來做（貴模型判斷、便宜模型跑量、獨立驗證把關），
+內建編排層決定誰來做（貴模型判斷、便宜模型跑量、獨立驗證把關；
+源自 pilotfish，MIT 授權改作），
 Psyflow 流程是把三者接起來的那條線：它站在「產品發想者＋PM＋
 全端工程師」的視角定義每個 stage 要產出什麼、該調用哪些成熟 skill
 當引擎。

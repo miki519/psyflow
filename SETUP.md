@@ -14,9 +14,8 @@ namespaced: `/psyflow:setup`, `/psyflow:discover`, …
 
 | Component | Layer | Install method |
 |---|---|---|
-| psyflow flow (this repo) | plugin (eight stage commands + psyflow / to-architecture skills) | user installs inside Claude Code |
+| psyflow flow (this repo) | plugin (eight stage commands + psyflow / to-architecture skills + orchestration: seven role agents + SessionStart policy hook) | user installs inside Claude Code |
 | psyflow CLAUDE.md blocks | global CLAUDE.md (pointer + conventions) | `install.sh` |
-| pilotfish | global CLAUDE.md block + `~/.claude/agents/` | upstream agent-driven install, user approves the merge plan |
 | code-review-graph | CLI + per-project MCP | `install.sh` installs the CLI |
 | Matt Pocock skills | plugin | user installs inside Claude Code |
 | Karpathy guidelines | plugin | user installs inside Claude Code |
@@ -62,34 +61,22 @@ directly whether `/psyflow:discover` (this repo's plugin), `/grill-me`
 (from mattpocock), and the `andrej-karpathy-skills:karpathy-guidelines`
 skill appear among the available commands/skills.
 
-### 3. Guide the user through pilotfish installation
+### 3. Verify the built-in orchestration layer
 
-pilotfish (multi-model orchestration: the main session plans, cheaper role
-agents execute, fresh contexts verify) has its own upstream agent-driven
-installer with an explicit approval gate — it writes into the user's global
-CLAUDE.md and `~/.claude/agents/`. NEVER bypass that gate, and never copy
-its files by hand.
+Multi-model orchestration (the main session plans, cheaper role agents
+execute, fresh contexts verify) ships INSIDE the psyflow plugin — seven
+role agents under `agents/` plus a SessionStart hook that injects the
+policy. No separate install.
 
-First check whether it is already installed: `~/.claude/agents/scout.md`
-exists and `~/.claude/CLAUDE.md` contains an orchestration (pilotfish)
-block. If yes, report so and move on.
+One legacy check: if `~/.claude/CLAUDE.md` still contains a
+`<!-- pilotfish:begin -->` block or `~/.claude/agents/` holds the old
+pilotfish role files (scout, Explore, executor, …), the hook fails closed
+and prints a migration message. Back up those files, remove the block and
+the old agent files (with the user's approval), and restart.
 
-If not, clone the pinned verified version (see README's version table)
-and follow the upstream runbook:
-
-```bash
-git clone --branch v1.3.5 --depth 1 https://github.com/Nanako0129/pilotfish.git
-```
-
-Read `install/AGENT-INSTALL.md` from that checkout and follow it: show the
-user the full plan of changes and get explicit approval BEFORE writing
-anything. (Alternatively the user can run it in a fresh session from the
-checkout, per the pilotfish README.)
-
-Verify (after the user restarts the session): `~/.claude/agents/` contains
-the eight role files (scout, Explore, executor, mech-executor,
-plan-verifier, verifier, security-reviewer, security-executor) and the
-CLAUDE.md orchestration block is present.
+Verify (after the user restarts Claude Code): the session start shows the
+psyflow orchestration policy, and the agent list includes
+`psyflow:scout`, `psyflow:executor`, `psyflow:verifier` etc.
 
 ### 4. Explain the per-project step (do not run it now)
 
@@ -112,8 +99,9 @@ When done, report a checklist to the user:
 - [ ] CLI: code-review-graph
 - [ ] Plugins: mattpocock skills + Karpathy guidelines (installed
       interactively by the user, verified by you)
-- [ ] pilotfish: orchestration block + eight role agents (installed via the
-      upstream runbook with the user's approval)
+- [ ] Orchestration layer: seven `psyflow:*` role agents visible + policy
+      injected at session start (built into the plugin; no legacy pilotfish
+      block or agent files remaining)
 - [ ] Per-project steps explained
 
 If any item failed: report the cause and the impact honestly. Never mark a

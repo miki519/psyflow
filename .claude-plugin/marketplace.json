@@ -5,7 +5,7 @@
     {
       "name": "psyflow",
       "source": "./",
-      "description": "Eight-stage delivery flow — grilling-driven discovery, frozen specs, ticketed builds, staged releases."
+      "description": "Eight-stage delivery flow — grilling-driven discovery, frozen specs, ticketed builds, staged releases — with a built-in multi-model orchestration layer (role agents + ambient policy)."
     }
   ]
 }

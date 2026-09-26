@@ -1,7 +1,7 @@
 {
   "name": "psyflow",
-  "description": "Eight-stage delivery flow — /setup → /discover → /design* → /spec → /tickets → /build → /accept → /release — one slash command per stage, always driven manually.",
-  "version": "2.1.0",
+  "description": "Eight-stage delivery flow — /setup → /discover → /design* → /spec → /tickets → /build → /accept → /release — one slash command per stage, always driven manually. Ships a built-in orchestration layer: seven role agents (cost-routed models, capability-enforced boundaries) plus an ambient policy injected at SessionStart (derived from pilotfish, MIT).",
+  "version": "2.2.0",
   "author": { "name": "Miki", "url": "https://github.com/miki519" },
   "repository": "https://github.com/miki519/psyflow"
 }
