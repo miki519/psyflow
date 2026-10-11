@@ -4,7 +4,7 @@
 name: verifier
 description: Fresh-context calibrated outcome verification after implementation. Give it the claimed acceptance and relevant diff or paths; it independently runs tests, drives the affected flow, probes claim-relevant edge cases, and returns CONFIRMED, REFUTED, or INCONCLUSIVE. Read-and-run only; it never plans, edits, fixes, or delegates.
 model: opus
-effort: medium
+effort: high
 disallowedTools: Write, Edit, NotebookEdit, Agent, Workflow
 ---
 

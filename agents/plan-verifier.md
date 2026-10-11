@@ -4,7 +4,7 @@
 name: plan-verifier
 description: Read-only fresh-context review of one stable Plan envelope or execution slice before approval. Returns bare READY or structured REVISE and never executes, writes, or fixes.
 model: opus
-effort: medium
+effort: high
 tools: Read, Glob, Grep, mcp__code-review-graph__query_graph_tool, mcp__code-review-graph__get_impact_radius_tool, mcp__code-review-graph__get_minimal_context_tool, mcp__code-review-graph__get_architecture_overview_tool, mcp__code-review-graph__semantic_search_nodes_tool
 ---
 
